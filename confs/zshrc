@@ -1,0 +1,186 @@
+# Lines configured by zsh-newuser-install
+function gitBranchInfo {
+  if [ ! -e .git ] ; then
+    echo ""
+    exit
+  fi
+  info=$(git branch -vv | sed 's/\].*$/\]/g;s/\(^.\ .*\)\ [a-z0-9]*\ \(\[\x1B\[34m.*\)/\1 \2/g')
+ info=$(echo $info | sed 's/\*.*//g')
+ info=$(echo $info | sed 's/ahead /↑/g;s/behind /↓/g;s/:\ //g')
+ info=$(echo "$info" | tr '\n' ' ')
+ currentBranch=`gitInfo`
+ echo -e "$currentBranch:$info\n\r"
+}
+function gitInfo {
+  if [ ! -e .git ] ; then
+    echo ""
+    exit
+  fi
+
+  gitStatus="`git -c color.branch=false branch | grep -i '*' | awk '{print $2}'| egrep -o '[a-z]*'`"
+  modified=`git diff --name-only 2>/dev/null| wc -l`
+  if [ "$modified" -gt 0  ]; then 
+    gitStatus="%{$fg[red]%}♦$modified%{$reset_color%}$gitStatus"
+  fi
+
+  staged=`git diff --cached --name-only 2>/dev/null| wc -l`
+  if [ "$staged" -gt 0  ]; then 
+    gitStatus="%{$fg[green]%}+$staged%{$reset_color%}$gitStatus"
+  fi
+
+  ahead=`git log --oneline @{u}.. 2>/dev/null| wc -l`
+  if [ "$ahead" -gt 0 ] ; then 
+    gitStatus="$gitStatus%{$fg_bold[blue]%}↑$ahead%{$reset_color%}"
+  fi
+
+  behind=`git log --oneline ..@{u} 2>/dev/null| wc -l`
+  if [ "$behind" -gt 0 ] ; then 
+    gitStatus="$gitStatus%{$fg_bold[red]%}↓$behind%{$reset_color%}"
+  fi
+
+  echo -e "[$gitStatus]"
+}
+
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+bindkey "^R" history-incremental-search-backward
+
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+bindkey -v
+
+# Colors in tab completion entries
+export LS_COLORS="rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:"
+
+setopt promptsubst          # allow paramater, command, so on in prompt
+#setopt transient_rprompt    # hide RPROMPT after cmdline is executed
+
+export BROWSER="google-chrome-unstable"
+zstyle :compinstall filename '/home/asian/.zshrc'
+
+autoload -Uz compinit promptinit
+autoload -U colors && colors
+zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
+compinit
+zstyle ':completion:*' menu select
+setopt completealiases
+
+promptinit
+PROMPT="%m> "
+RPROMPT="%{$fg[green]%}%~%{$reset_color%}"
+
+alias mutt-athena='mutt -F ~/.confs/.muttrc.athena'
+alias mutt-psl='mutt -F ~/.confs/.muttrc.psl'
+alias mplab='_JAVA_AWT_WM_NONREPARENTING=1 mplab_ide'
+alias start_fsw='rdesktop -g 1280x800 FSW -u Instrument -p 894129'
+alias capsoff='setxkbmap -option caps:escape'
+alias qemu-i386='qemu-system-i386 -machine accel=kvm -smp 1,sockets=2,cores=1 -m 2048 -enable-kvm -net user,vlan=0,hostfwd=tcp::9080-:8080,hostfwd=tcp::9022-:22 -net nic -serial stdio'
+alias qemu-x86_64='qemu-system-x86_64 -machine accel=kvm -smp 2,sockets=2,cores=1 -m 2048 -enable-kvm -net user,vlan=0,hostfwd=tcp::9022-:22,hostfwd=tcp::9080-:8080,hostfwd=tcp::13389-:3389 -net nic -serial stdio'
+alias vi='nvim'
+alias ls='ls --color'
+alias pacman="sudo pacman"
+alias wifi-menu='sudo wifi-menu'
+alias netctl='sudo netctl'
+alias mouseoff='synclient TouchpadOff=1'
+alias mouseon='synclient TouchpadOff=0'
+alias cleanpacs='sudo pacman -Rns $(pacman -Qqtd); sudo pacman -Sc'
+alias makepkg32='linux32 makepkg -src --config ~/.makepkg.i686.conf'
+alias halt="systemctl poweroff"
+alias xclip='xclip ; xclip -o | xclip -selection clipboard'
+alias x11clip='xclip -o -selection clipboard'
+
+set -o vi
+
+#export PATH=$PATH:~/.bin
+export EDITOR="vim"
+alias sudo="sudo "  #??why?
+
+start_tmux() {
+    tmux new-session -d -s start 
+
+    tmux split-window -tstart -v -p50 
+
+    tmux select-pane -t0 
+    tmux split-window -tstart -h -p33 
+
+    tmux select-pane -t0 
+    tmux split-window -tstart -h -p50 
+
+    tmux select-pane -t3 
+    tmux split-window -tstart -h -p50
+
+    tmux select-pane -t2 
+    tmux split-window -tstart -v -p50
+
+    tmux select-pane -t0 
+    tmux send-keys -tstart:0 "htop" C-m
+    tmux select-pane -t1 
+    tmux send-keys -tstart:0 "watch -c -d -t \"ip addr\" " C-m
+    tmux clock-mode -t2 
+    tmux select-pane -t3
+    tmux send-keys -tstart:0 "nload" C-m
+    tmux select-pane -t4 
+#    tmux send-keys -tstart:0 "sleep 5 ; pacaur -Syu --noconfirm --noedit" C-m
+    tmux send-keys -tstart:0 "sudo journalctl -xe -f" C-m
+
+    tmux new-window -tstart 
+    tmux split-window -tstart -h -p50 
+
+    tmux select-pane -t1 
+    tmux split-window -tstart -v -p50 
+
+    tmux select-pane -t0 
+    tmux send-keys -tstart:1 "mutt -F ~/.confs/.muttrc.psl" C-m
+    tmux select-pane -t1 
+    tmux send-keys -tstart:1 "mutt -F ~/.confs/.muttrc.nmsu" C-m
+    tmux select-pane -t2 
+    tmux send-keys -tstart:1 "mutt -F ~/.confs/.muttrc" C-m
+
+    tmux attach-session -t start
+}
+
+start_git() {
+  tmux split-window -p30 
+  tmux select-pane -t 0 
+  tmux split-window -h -p30  'watch -ct "git status -uno"'
+  tmux split-window -v -p30 'watch -ct "git prettierlog"'
+  tmux select-pane -t 1 
+  tmux split-window -v -p30 'watch -ct "git br -vv"'
+  tmux select-pane -t 0
+}
+
+man() {
+    env LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+                        LESS_TERMCAP_md=$(printf "\e[1;31m") \
+                        LESS_TERMCAP_me=$(printf "\e[0m") \
+                        LESS_TERMCAP_se=$(printf "\e[0m") \
+                        LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+                        LESS_TERMCAP_ue=$(printf "\e[0m") \
+                        LESS_TERMCAP_us=$(printf "\e[1;32m") \
+                        man "$@"
+}
+
+notifydone() {
+  notify-send "Done" "$(pwd)"
+}
+
+pacmanUpdate(){
+  pacaur -Syu --noconfirm --noedit;
+  notify-send "Update Complete" "`pwd`"
+}
+
+makepac(){
+  makepkg -sif --noconfirm
+  notify-send "Update Complete" "`pwd`"
+}
+
+start_social(){
+  surf touch.facebook.com 2>/dev/null > /dev/null&
+  surf mightytext.net/web 2>/dev/null > /dev/null&
+  surf web.tweetdeck.com  2>/dev/null > /dev/null&
+  ssh -YC ruben tmux a -d
+}
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
