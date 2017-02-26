@@ -16,6 +16,9 @@ Plug 'https://github.com/derekwyatt/vim-fswitch.git'
 Plug 'https://github.com/radenling/vim-dispatch-neovim.git'
 Plug 'https://github.com/tpope/vim-surround'
 Plug 'https://github.com/vim-airline/vim-airline-themes.git'
+Plug 'https://github.com/rhysd/vim-clang-format'
+Plug 'https://github.com/kana/vim-operator-user'
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
@@ -96,4 +99,7 @@ hi Folded ctermfg=216
 " colorscheme preto
 autocmd FileType make setlocal noexpandtab
 let g:tex_flavor='latex'
+
+" Lambda formaterr
+xmap cf :ClangFormat<CR>
 
