@@ -4,7 +4,7 @@ set -e
 projectDir="`git rev-parse --show-toplevel`"
 
 installPkgs() {
-  sudo pacman -S git ctags tmux neovim zsh rkt --noconfirm 
+  sudo pacman -S git ctags tmux neovim zsh rkt clang-tools-extra --noconfirm 
 }
 
 setupNvim() {
@@ -24,6 +24,7 @@ setupNvim() {
   nvim +PlugInstall +qall
 
 }
+
 main() {
   sudo pacman -Sy
 
