@@ -103,3 +103,9 @@ let g:tex_flavor='latex'
 " Lambda formaterr
 xmap cf :ClangFormat<CR>
 
+" vim grep
+"map <C-f> :execute "vimgrep /" . expand("<cword>") . "/j **.cpp" <Bar> cw<CR>
+map <C-f> :execute "vimgrep /" . expand("<cword>") . "/j `git rev-parse --show-toplevel`/**/*.cpp" <Bar> cw<CR>
+"map <C-f> :execute " grep -srnw --binary-files=without-match --exclude-dir=.git . -e " . expand("<cword>") . " " <bar> cwindow<CR>
+
+
