@@ -108,4 +108,5 @@ xmap cf :ClangFormat<CR>
 map <C-f> :execute "vimgrep /" . expand("<cword>") . "/j `git rev-parse --show-toplevel`/**/*.cpp" <Bar> cw<CR>
 "map <C-f> :execute " grep -srnw --binary-files=without-match --exclude-dir=.git . -e " . expand("<cword>") . " " <bar> cwindow<CR>
 
+hi Search cterm=NONE ctermfg=grey ctermbg=blue
 
