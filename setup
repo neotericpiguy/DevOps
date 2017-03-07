@@ -4,13 +4,13 @@ set -e
 projectDir="`git rev-parse --show-toplevel`"
 
 installPkgs() {
-  sudo pacman -S git ctags tmux neovim zsh clang-tools-extra --noconfirm 
+  pacman -S git ctags tmux neovim zsh rkt clang-tools-extra --noconfirm 
 }
 
 setupNvim() {
-  sudo chsh -s /usr/bin/zsh $USER
-  sudo ln -sf /usr/bin/nvim /usr/bin/vi 
-  sudo ln -sf /usr/bin/nvim /usr/bin/vim 
+  chsh -s /usr/bin/zsh $USER || true
+  ln -sf /usr/bin/nvim /usr/bin/vi 
+  ln -sf /usr/bin/nvim /usr/bin/vim 
 
   curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -22,11 +22,10 @@ setupNvim() {
   ln -sf $projectDir/confs/zshrc ~/.zshrc
 
   nvim +PlugInstall +qall
-
 }
 
 main() {
-  sudo pacman -Sy
+  pacman -Sy
 
   installPkgs
 
