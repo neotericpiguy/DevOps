@@ -58,7 +58,7 @@ set incsearch
 set number
 set relativenumber
 set autoindent
-set hlsearch!
+set nohlsearch
 set cursorline
 
 set shiftwidth=2
@@ -102,11 +102,28 @@ let g:tex_flavor='latex'
 
 " Lambda formaterr
 xmap cf :ClangFormat<CR>
+let g:clang_format#style_options = {
+            \ "BasedOnStyle" : "Google",
+            \ "ColumnLimit" : 0,
+            \ "AccessModifierOffset" : -2,
+            \ "BreakConstructorInitializers" : "AfterColon",
+            \ "DerivePointerAlignment" : "false",
+            \ "PointerAlignment" : "Left",
+            \ "BinPackArguments" : "true",
+            \ "FixNamespaceComments" : "true",
+            \ "MaxEmptyLinesToKeep" : 1,
+            \ "AllowShortIfStatementsOnASingleLine" : "false",
+            \ "AllowShortFunctionsOnASingleLine" : "None",
+            \ "BreakBeforeBraces": "Custom",
+            \ "BraceWrapping" : {
+            \ "AfterClass": "true",
+            \ "BeforeElse": "true",
+            \ "AfterControlStatement": "true",
+            \ "BeforeCatch": "true",
+            \ "SplitEmptyFunction": "true",
+            \ "SplitEmptyRecord": "true",
+            \ "AfterFunction": "true"
+            \}}
 
-" vim grep
-"map <C-f> :execute "vimgrep /" . expand("<cword>") . "/j **.cpp" <Bar> cw<CR>
-map <C-f> :execute "vimgrep /" . expand("<cword>") . "/j `git rev-parse --show-toplevel`/**/*.cpp" <Bar> cw<CR>
-"map <C-f> :execute " grep -srnw --binary-files=without-match --exclude-dir=.git . -e " . expand("<cword>") . " " <bar> cwindow<CR>
-
-hi Search cterm=NONE ctermfg=grey ctermbg=blue
+autocmd FileType c,cpp ClangFormatAutoEnable
 
