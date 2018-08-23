@@ -58,6 +58,7 @@ setopt promptsubst          # allow paramater, command, so on in prompt
 #setopt transient_rprompt    # hide RPROMPT after cmdline is executed
 
 export BROWSER="google-chrome-unstable"
+export MAKEFLAGS="-j`nproc`"
 zstyle :compinstall filename '/home/asian/.zshrc'
 
 autoload -Uz compinit promptinit
@@ -78,6 +79,7 @@ alias start_fsw='rdesktop -g 1280x800 FSW -u Instrument -p 894129'
 alias capsoff='setxkbmap -option caps:escape'
 alias qemu-i386='qemu-system-i386 -machine accel=kvm -smp 1,sockets=2,cores=1 -m 2048 -enable-kvm -net user,vlan=0,hostfwd=tcp::9080-:8080,hostfwd=tcp::9022-:22 -net nic -serial stdio'
 alias qemu-x86_64='qemu-system-x86_64 -machine accel=kvm -smp 2,sockets=2,cores=1 -m 2048 -enable-kvm -net user,vlan=0,hostfwd=tcp::9022-:22,hostfwd=tcp::9080-:8080,hostfwd=tcp::13389-:3389 -net nic -serial stdio'
+alias qemu-x86_64-headless='qemu-system-x86_64 -machine accel=kvm -smp 2,sockets=2,cores=1 -m 2048 -enable-kvm -net user,vlan=0,hostfwd=tcp::9022-:22,hostfwd=tcp::9080-:8080,hostfwd=tcp::13389-:3389 -net nic -nographic'
 alias vi='nvim'
 alias ls='ls --color'
 alias pacman="sudo pacman"
