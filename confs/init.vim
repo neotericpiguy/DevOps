@@ -10,6 +10,7 @@ Plug 'git://github.com/majutsushi/tagbar'
 Plug 'git://github.com/tpope/vim-dispatch.git'
 Plug 'git://github.com/tpope/vim-fugitive.git'
 Plug 'https://github.com/airblade/vim-gitgutter.git'
+Plug 'Yggdroot/indentLine'
 Plug 'https://github.com/benekastah/neomake.git'
 Plug 'https://github.com/bling/vim-airline.git'
 Plug 'https://github.com/derekwyatt/vim-fswitch.git'
@@ -23,11 +24,10 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'octol/vim-cpp-enhanced-highlight'
-
 call plug#end()
 
 let mapleader = "\<Space>"
-nnoremap <Leader>w :w<CR>
+nnoremap <Leader>w :wa<CR>
 
 autocmd! BufWritePost * Neomake!
 
@@ -44,6 +44,7 @@ endfunction
 command! FZFExecute call FZFExecute()
 
 map <C-k> :FZFExecute<CR>
+map <C-t> :Tags<CR>
 
 set makeprg=make\ -j`nproc`
 
@@ -73,13 +74,12 @@ xmap ga <Plug>(EasyAlign)
 
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
-set autochdir
 
 nmap \ll :Make<CR>
 map \lc :Make clean<CR>:Make<CR>
 
 set autochdir  "might be import tant for ctags
-set tags+=./tags;
+set tags+=./tags
 
 nmap ,l :set list!<CR>
 
@@ -96,7 +96,6 @@ map <C-p> :cp<CR>
 hi Folded ctermbg=000
 hi Folded ctermfg=216
 
-" colorscheme preto
 autocmd FileType make setlocal noexpandtab
 let g:tex_flavor='latex'
 
@@ -125,5 +124,11 @@ let g:clang_format#style_options = {
             \ "AfterFunction": "true"
             \}}
 
-autocmd FileType c,cpp ClangFormatAutoEnable
+"Auto format
+"autocmd FileType c,cpp ClangFormatAutoEnable
+
+"Color stuff to help view things
+set background=dark
+hi Visual ctermfg=White ctermbg=LightBlue cterm=none
+
 
