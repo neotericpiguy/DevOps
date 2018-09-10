@@ -27,9 +27,20 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 call plug#end()
 
 let mapleader = "\<Space>"
-nnoremap <Leader>w :wa<CR>
+nnoremap <Leader>w :wa<CR>:ClangFormat<CR>
 
 autocmd! BufWritePost * Neomake!
+
+" Automatically open, but do not go to (if there are errors) the quickfix /
+" location list window, or close it when is has become empty.
+"
+" Note: Must allow nesting of autocmds to enable any customizations for quickfix
+" buffers.
+" Note: Normally, :cwindow jumps to the quickfix window if the command opens it
+" (but not if it's already open). However, as part of the autocmd, this doesn't
+" seem to happen.
+" autocmd QuickFixCmdPost [^l]* nested cwindow
+" autocmd QuickFixCmdPost    l* nested lwindow
 
 function! FZFExecute()
   " Remove trailing new line to make it work with tmux splits
@@ -131,4 +142,5 @@ let g:clang_format#style_options = {
 set background=dark
 hi Visual ctermfg=White ctermbg=LightBlue cterm=none
 
-
+"Indent characters
+let g:indentLine_char = '.'
