@@ -20,6 +20,7 @@ setupNvim() {
   ln -sf $projectDir/confs/init.vim ~/.config/nvim/init.vim
   ln -sf $projectDir/confs/tmux.conf ~/.tmux.conf
   ln -sf $projectDir/confs/zshrc ~/.zshrc
+  ln -sf $projectDir/confs/shrc ~/.shrc
 
   nvim +PlugInstall +qall
 }
