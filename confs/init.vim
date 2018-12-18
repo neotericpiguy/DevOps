@@ -1,11 +1,16 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required 
+" put this line first in ~/.vimrc
+set nocompatible | filetype indent plugin on | syn on
 
 call plug#begin('~/.vim/plugged')
-" Add plugins to &runtimepath
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
+"
+" Argumentative aids with manipulating and moving between function arguments.
+" 
+" Shifting arguments with <, and >,
+" Moving between argument boundaries with [, and ],
+" New text objects a, and i,
 Plug 'git://github.com/PeterRincker/vim-argumentative.git'
-Plug 'git://github.com/godlygeek/tabular.git'
+"Plug 'git://github.com/godlygeek/tabular.git' " Mostly use easy-align
 Plug 'git://github.com/majutsushi/tagbar'
 Plug 'git://github.com/tpope/vim-dispatch.git'
 Plug 'git://github.com/tpope/vim-fugitive.git'
@@ -18,13 +23,30 @@ Plug 'https://github.com/radenling/vim-dispatch-neovim.git'
 Plug 'https://github.com/tpope/vim-surround'
 Plug 'https://github.com/vim-airline/vim-airline-themes.git'
 Plug 'https://github.com/rhysd/vim-clang-format'
-Plug 'https://github.com/kana/vim-operator-user'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+"Plug 'https://github.com/kana/vim-operator-user'
+"Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'https://github.com/tpope/vim-repeat.git'
+
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
 call plug#end()
+
+let g:deoplete#enable_at_startup = 1
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+filetype plugin indent on
 
 let mapleader = "\<Space>"
 nnoremap <Leader>w :wa<CR>:ClangFormat<CR>
@@ -56,6 +78,7 @@ command! FZFExecute call FZFExecute()
 
 map <C-k> :FZFExecute<CR>
 map <C-t> :Tags<CR>
+map <C-b> :Buffers<CR>
 
 set makeprg=make\ -j`nproc`
 
@@ -63,6 +86,8 @@ let g:airline_theme='ubaryd'
 
 au! BufEnter *.cpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../inc'
 map gs :FSHere<CR>
+map \refresh :source ~/.config/nvim/init.vim<CR>:PlugClean<CR>:PlugInstall<CR>
+nnoremap gb :buffers<CR>:buffer<Space>
 
 set nowrap
 syntax on

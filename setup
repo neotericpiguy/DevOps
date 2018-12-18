@@ -4,11 +4,19 @@ set -e
 projectDir="`git rev-parse --show-toplevel`"
 
 installPkgs() {
-  pacman -S git ctags tmux neovim zsh rkt clang-tools-extra --noconfirm 
+  if [ -e /etc/apt/sources.list ]; then
+#    apt update
+    apt install zsh clang-format clang-tidy curl -y
+  else
+    pacman -Sy
+
+    sed -r -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
+    pacman -S rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip --noconfirm 
+    pip3 install --user pynvim 
+  fi
 }
 
 setupNvim() {
-  chsh -s /usr/bin/zsh $USER || true
   ln -sf /usr/bin/nvim /usr/bin/vi 
   ln -sf /usr/bin/nvim /usr/bin/vim 
 
@@ -22,12 +30,11 @@ setupNvim() {
   ln -sf $projectDir/confs/zshrc ~/.zshrc
   ln -sf $projectDir/confs/shrc ~/.shrc
 
-  nvim +PlugInstall +qall
+  nvim +PlugInstall +UpdateRemotePlugins +qall 
+  chsh -s /usr/bin/zsh $USER 
 }
 
 main() {
-  pacman -Sy
-
   installPkgs
 
   setupNvim
