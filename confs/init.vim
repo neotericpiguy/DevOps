@@ -161,7 +161,7 @@ let g:clang_format#style_options = {
             \}}
 
 "Auto format
-"autocmd FileType c,cpp ClangFormatAutoEnable
+autocmd FileType c,cpp ClangFormatAutoEnable
 
 "Color stuff to help view things
 set background=dark

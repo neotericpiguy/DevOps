@@ -149,7 +149,7 @@ start_git() {
   tmux split-window -h -p30  'watch -ct "git status -uno"'
   tmux split-window -v -p30 'watch -ct "git prettierlog"'
   tmux select-pane -t 1 
-  tmux split-window -v -p30 'watch -ct "git br -vv"'
+  tmux split-window -v -p30 'watch -ct "git br -avv"'
   tmux select-pane -t 0
 }
 
