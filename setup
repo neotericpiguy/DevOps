@@ -31,9 +31,10 @@ setupNvim() {
   ln -sf $projectDir/confs/shrc ~/.shrc
   ln -sf $projectDir/confs/xinitrc ~/.xinitrc
   ln -sf $projectDir/confs/gitconfig ~/.gitconfig
+  ln -sf $projectDir/confs/git_template ~/.git_template
 
   nvim +PlugInstall +UpdateRemotePlugins +qall 
-  sudo chsh -s /usr/bin/zsh $USER 
+  sudo chsh -s /usr/bin/zsh $USER  || true
 }
 
 main() {
