@@ -10,7 +10,7 @@ installPkgs() {
   else
     sudo pacman -Sy
 
-    sed -r -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
+    sudo sed -r -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
     sudo pacman -S rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip --noconfirm 
     sudo pip3 install --user pynvim 
   fi
