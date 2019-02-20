@@ -8,17 +8,17 @@ installPkgs() {
 #    apt update
     apt install zsh clang-format clang-tidy curl -y
   else
-    pacman -Sy
+    sudo pacman -Sy
 
     sed -r -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
-    pacman -S rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip --noconfirm 
-    pip3 install --user pynvim 
+    sudo pacman -S rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip --noconfirm 
+    sudo pip3 install --user pynvim 
   fi
 }
 
 setupNvim() {
-  ln -sf /usr/bin/nvim /usr/bin/vi 
-  ln -sf /usr/bin/nvim /usr/bin/vim 
+  sudo ln -sf /usr/bin/nvim /usr/bin/vi 
+  sudo ln -sf /usr/bin/nvim /usr/bin/vim 
 
   curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -31,7 +31,7 @@ setupNvim() {
   ln -sf $projectDir/confs/shrc ~/.shrc
 
   nvim +PlugInstall +UpdateRemotePlugins +qall 
-  chsh -s /usr/bin/zsh $USER 
+  sudo chsh -s /usr/bin/zsh $USER 
 }
 
 main() {
