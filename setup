@@ -20,6 +20,9 @@ setupNvim() {
   sudo ln -sf /usr/bin/nvim /usr/bin/vi 
   sudo ln -sf /usr/bin/nvim /usr/bin/vim 
 
+  pip3 install --user pynvim 
+  pip3 install --user --upgrade pynvim
+
   curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
@@ -34,9 +37,6 @@ setupNvim() {
   ln -sf $projectDir/confs/git_template ~/.git_template
 
   nvim +PlugInstall +UpdateRemotePlugins +qall 
-
-  pip3 install --user pynvim 
-  pip3 install --user --upgrade pynvim
 
   sudo chsh -s /usr/bin/zsh $USER  || true
 }
