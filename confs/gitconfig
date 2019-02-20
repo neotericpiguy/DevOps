@@ -1,0 +1,33 @@
+[user]
+  name = Jonathan Annua
+  email = jannua@athena.net
+[push]
+  default = simple
+[color]
+  status = always
+  branch = always
+  log = always
+[alias]
+  prettylog = log --format='%Cred%h%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset%C(yellow)%d%Creset' --no-merges
+	prettierlog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	co = checkout
+	cm = commit
+	mfetch  = fetch --all
+	br = branch
+	stat = status -uno
+	brstat = branch -vvv --all
+	d = difftool
+	ls = ls-files
+	greview = push origin HEAD:refs/for/master
+	ctags = !.git/hooks/ctags
+[diff]
+  tool = vimdiff
+[difftool]
+  prompt = false
+[merge]
+  tool = vimdiff
+[receive]
+  denyNonFastFowards = false
+[init]
+	templatedir = ~/.git_template

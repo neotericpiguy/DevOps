@@ -1,0 +1,26 @@
+setxkbmap -option terminate:ctrl_alt_bksp           #Enables ctrl + alt + Bkspace
+#xmodmap ~/.speedswapper &
+setxkbmap -option caps:escape # maps caps to escape key
+xrdb ~/.Xresources &
+#xscreensaver -nosplash &
+#syndaemon -t -k -i 2 -d &
+#Get rid of previous syndaemon
+#killall syndaemon
+#More aggressive behavior, allow for mod+key combos, enable mouse movements
+syndaemon -i 0.2 -K -t -d
+
+dunst & 
+#setxkbmap -option terminate:ctrl_alt_bksp           #Enables ctrl + alt + Bkspace
+#display -size 1600x900 -window root ~/.icons/wallpaper.jpg &
+#hsetroot -full ~/.icons/wallpaper.jpg && xcompmgr &
+
+autocutsel -fork &
+autocutsel -selection PRIMARY -fork &
+
+#conky | while read line; do xsetroot -name "$line" ; done &
+
+google-chrome --no-startup-window &
+
+while true; do
+    dwm >> ~/.dwm.log
+done

@@ -29,6 +29,8 @@ setupNvim() {
   ln -sf $projectDir/confs/tmux.conf ~/.tmux.conf
   ln -sf $projectDir/confs/zshrc ~/.zshrc
   ln -sf $projectDir/confs/shrc ~/.shrc
+  ln -sf $projectDir/confs/xinitrc ~/.xinitrc
+  ln -sf $projectDir/confs/gitconfig ~/.gitconfig
 
   nvim +PlugInstall +UpdateRemotePlugins +qall 
   sudo chsh -s /usr/bin/zsh $USER 
