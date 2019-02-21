@@ -36,6 +36,11 @@ setupNvim() {
   ln -sf $projectDir/confs/gitconfig ~/.gitconfig
   ln -sf $projectDir/confs/git_template ~/.git_template
 
+  mkdir -p ~/.mutt
+  pushd ~/.mutt
+  find ~/src/DevOps/confs/mutt -type f -exec echo ln -sf {} \; 
+  popd
+
   nvim +PlugInstall +UpdateRemotePlugins +qall 
 
   sudo chsh -s /usr/bin/zsh $USER  || true

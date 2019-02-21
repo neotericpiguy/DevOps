@@ -1,0 +1,31 @@
+# A basic .muttrc configs for key bindings and styles
+source "~/.mutt/muttrc.base
+
+# Account spsectif settings
+set query_command = "goobook query '%s'" 
+
+set my_user="neotericpiguy@gmail.com"
+set my_pass="`pass Email/neotericpiguy@gmail.com`"
+set my_realname = "Jonathan Annua"
+set from = "$my_realname <$my_user>"
+
+set imap_user = $my_user
+set imap_pass = $my_pass
+set folder = "imaps://imap.gmail.com"
+set spoolfile = "+INBOX" # Default view
+#mailboxes =+INBOX
+
+set ssl_starttls = yes
+set ssl_force_tls = yes
+set smtp_url = "smtps://$my_user@smtp.gmail.com"       # UNKNWON PROOCOL
+set smtp_pass = $my_pass
+set smtp_authenticators="login"
+
+unset record
+
+set my_archive = +All\ Mail
+
+macro index,pager e  "<save-message>$my_archive<enter><enter><sync-mailbox><enter>" "Archive message"
+mailboxes \ \ \ \ $my_user
+
+set signature=
