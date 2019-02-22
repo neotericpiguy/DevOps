@@ -20,7 +20,8 @@ autocutsel -selection PRIMARY -fork &
 
 #conky | while read line; do xsetroot -name "$line" ; done &
 
-while :; do xsetroot -name "`date`" ; sleep 60 ; done &
+#while :; do xsetroot -name "`date`" ; sleep 60 ; done &
+while :; do xsetroot -name "`curl -s "wttr.in/?format=%l:+%t%w"` `date +"%a %b %d, %Y %H:%M %Z"` " ; sleep 60 ; done &
 
 google-chrome-beta --no-startup-window &
 
