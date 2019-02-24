@@ -1,7 +1,7 @@
 # Change the following line to a different editor you prefer.
 set editor="vim +7 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set tw=72 ft=mail noautoindent' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
 set markers=no
-set wrap=0
+set wrap=80
 set edit_headers=yes
 set from = "$my_realname <$imap_user>"
 
@@ -119,11 +119,7 @@ macro index,pager s "<save-message>?" "Move to Folder"
 set status_format="/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
 
 bind index,pager R group-reply
-#set index_format="%4C %Z %X %{%y%m%d} %-12.12L %?M?(#%03M)&(%4c)? %?y?(%.20Y) ?%s"
-#set index_format="%4C %Z %?X?A&-? %{%y%m%d} %-12.12L %?M?(#%03M)&(%4c)? %?y?(%.20Y) ?%s"
-#set index_format="%4C %Z %?X?A&-? %{%b %d} %-15.15L (%?l?%4l&%4c?) %s"
-#set date_format="%y-%m-%d %T"
-#
+
 set sleep_time=0
 set pager_context=3
 set pager_stop=yes
