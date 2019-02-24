@@ -6,11 +6,12 @@ setxkbmap -option caps:escape # maps caps to escape key
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 dunst & 
-xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55 &
+(sleep 5 && xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55) &
 
 google-chrome-beta --no-startup-window &
 
 while :; do xsetroot -name "`curl -s "wttr.in/?format=%l:+%t%w"` `date +"%a %b %d, %Y %H:%M %Z"` " ; sleep 60 ; done &
+hsetroot &
 
 while true; do
     dwm >> ~/.dwm.log
