@@ -1,13 +1,8 @@
 # Change the following line to a different editor you prefer.
-#set editor = "vim"
-#set editor = "vim +:silent+/^$" 
 set editor="vim +7 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set tw=72 ft=mail noautoindent' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
-set sidebar_visible = yes
-#set sidebar_sort = yes
 set markers=no
 set wrap=0
 set edit_headers=yes
-#set from = "$my_user"
 set from = "$my_realname <$imap_user>"
 
 # Set up preview pane for messages
@@ -133,12 +128,10 @@ set sleep_time=0
 set pager_context=3
 set pager_stop=yes
 
-
 set index_format="%4C %Z %?X?A&-? %{%b %d} %-20.20L %?M?(#%03M)&(%4c)? %?y?(%.20Y) ?%s"
 
 #Goo book https://gitlab.com/goobook/goobook
 macro index,pager a "<pipe-message>goobook add<return>" "add the sender address to Google contacts"
-
 
 ##GPG
 # set crypt_autosign = yes #//responsed with signed
@@ -156,7 +149,7 @@ macro index,pager a "<pipe-message>goobook add<return>" "add the sender address 
 #set pgp_encrypt_sign_command="pgpewrap gpg --passphrase-fd 0 --batch --quiet --no-verbose --textmode --output - --encrypt --sign %?a?-u %a? --armor --always-trust -- -r $my_keyid -r %r -- %f"
 #http://usersolved.com/questions/how-can-you-let-mutt-encrypt-mails-in-the-sent-mail-folder
 set fcc_clear=yes
-set mark_old
+#set mark_old
 # set pgp_clearsign_command="gpg --no-verbose --batch --output - --passphrase-fd 0 --armor --textmode --clearsign %?a?-u %a? %f"
 # set pgp_decode_command="gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
 # set pgp_decrypt_command="gpg --passphrase-fd 0 --no-verbose --batch --output - %f"
