@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+bookmark=$(cat ~/.bin/bookmarks | dmenu -l 12)
+bookmark="`echo $bookmark | sed -r 's/^/http:\/\//g;s/http:\/\/http/http/g'`"
+
+[ ! "$bookmark" == "" ] && google-chrome --app="$bookmark"

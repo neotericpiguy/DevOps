@@ -13,7 +13,7 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	co = checkout
 	cm = commit
-	refresh  = commit -a --amend --no-edit
+	amend = commit -a --amend --no-edit
 	mfetch  = fetch --all
 	br = branch
 	stat = status -uno

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#youtube-dl -i -c -x --audio-quality 0 \
+#  --audio-format mp3 \
+#  "$1"
+youtube-dl --download-archive downloaded.txt --no-post-overwrites -ciwx \
+  --audio-quality 0 \
+  --audio-format mp3 -o "%(title)s.%(ext)s" \
+  "$1"
+#  --add-metadata \
+#if [[ ! -f "$1.mp3" ]] ; then
+#  mencoder -ovc copy -oac mp3lame "$1" -o "$1.raw"
+#
+#  mplayer -dumpaudio -dumpfile "$1.raw.mp3" "$1.raw"
+#
+#  rename .raw.mp3 .mp3 "$1.raw.mp3"
+#  rm "$1.raw" 
+#else
+#  echo "$1.mp3 already exists"
+#fi
