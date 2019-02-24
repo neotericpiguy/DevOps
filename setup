@@ -3,6 +3,13 @@
 set -e
 projectDir="`git rev-parse --show-toplevel`"
 
+_checkUser() {
+  if [ $USER = "root" ]; then
+    echo "Should not run as root"
+    exit 0
+  fi
+}
+
 installPkgs() {
   if [ -e /etc/apt/sources.list ]; then
 #    apt update
@@ -28,7 +35,11 @@ setupNvim() {
 
   [ ! -e ~/.config/nvim ] && mkdir -p ~/.config/nvim
 
+  mkdir -p ~/.config/nvim
+  mkdir -p ~/.config/dunst
+
   ln -sf $projectDir/confs/init.vim ~/.config/nvim/init.vim
+  ln -sf $projectDir/confs/dunstrc ~/.config/dunst/dunstrc
   ln -sf $projectDir/confs/tmux.conf ~/.tmux.conf
   ln -sf $projectDir/confs/zshrc ~/.zshrc
   ln -sf $projectDir/confs/shrc ~/.shrc
@@ -38,7 +49,7 @@ setupNvim() {
 
   mkdir -p ~/.mutt
   pushd ~/.mutt
-  find ~/src/DevOps/confs/mutt -type f -exec echo ln -sf {} \; 
+    find ~/src/DevOps/confs/mutt -type f -exec echo ln -sf {} \; 
   popd
 
   nvim +PlugInstall +UpdateRemotePlugins +qall 
@@ -47,6 +58,7 @@ setupNvim() {
 }
 
 main() {
+  _checkUser
   installPkgs
 
   setupNvim
