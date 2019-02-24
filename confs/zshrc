@@ -9,9 +9,9 @@ function precmd () {
       info="#[fg=red]$modified♦#[fg=white]$info"
     fi
 
-    tmux set -qg status-left "#S[$info]"
+    tmux set -qg status-left "#H:#S[$info]"
   else
-    tmux set -qg status-left "#S"
+    tmux set -qg status-left "#H:#S"
  fi
 }
 
