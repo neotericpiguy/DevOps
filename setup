@@ -59,7 +59,7 @@ setupNvim() {
 }
 
 main() {
-  _checkUser
+#  _checkUser this will kill Devarch because DevArch runs as root
   installPkgs
 
   setupNvim
