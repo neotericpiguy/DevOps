@@ -1,15 +1,19 @@
 # Lines configured by zsh-newuser-install
 function precmd () {
-  local modified=`git diff --name-only 2>/dev/null| wc -l`
   tmux info > /dev/null 2> /dev/null
   if [ $? -eq 0 ] ; then
       git rev-parse --show-toplevel 2>/dev/null > /dev/null
     if [ $? -eq 0 ] ; then
+      local modified=`git diff --name-only 2>/dev/null| wc -l`
+      local staged=`git diff --cached --name-only 2>/dev/null| wc -l`
       local name=$(basename `git rev-parse --show-toplevel`)
       local info=$(git branch -avv --no-color | egrep "^\*"  | sed -r 's/^\*\ ([^\ ]*)[^:]*\[(.*)\].*/\1:\2/g')
       info=$(echo $info | sed 's/ahead /\#\[fg=green\]↑\#\[fg=white\]/g;s/behind /\#\[fg=red\]↓\#\[fg=white\]/g;s/:\ //g')
       if [ "$modified" -gt 0  ]; then 
-        info="#[fg=red]$modified♦#[fg=white]$info"
+        info="#[fg=red]♦$modified#[fg=white]$info"
+      fi
+      if [ "$staged" -gt 0  ]; then 
+        info="#[fg=green]+$staged#[fg=white]$info"
       fi
       tmux set -qg status-left "#H:#S[$name-$info]"
     else
