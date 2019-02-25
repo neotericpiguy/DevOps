@@ -50,7 +50,7 @@ setupNvim() {
 
   mkdir -p ~/.mutt
   pushd ~/.mutt
-    find ~/src/DevOps/confs/mutt -type f -exec ln -sf {} \; 
+    find $projectDir/confs/mutt -type f -exec ln -sf {} \; 
   popd
 
   nvim +PlugInstall +UpdateRemotePlugins +qall 
