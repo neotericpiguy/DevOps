@@ -13,7 +13,7 @@ _checkUser() {
 installPkgs() {
   if [ -e /etc/apt/sources.list ]; then
 #    apt update
-    apt install zsh clang-format clang-tidy curl -y
+    apt install zsh clang-format clang-tidy curl python3-pip -y
   else
     sudo pacman -Sy
 
