@@ -86,7 +86,7 @@ alias qemu-i386='qemu-system-i386 -machine accel=kvm -smp 1,sockets=2,cores=1 -m
 alias qemu-x86_64='qemu-system-x86_64 -machine accel=kvm -smp 2,sockets=2,cores=1 -m 2048 -enable-kvm -net user,vlan=0,hostfwd=tcp::9022-:22,hostfwd=tcp::9080-:8080,hostfwd=tcp::13389-:3389 -net nic -serial stdio'
 alias qemu-x86_64-headless='qemu-system-x86_64 -machine accel=kvm -smp 2,sockets=2,cores=1 -m 2048 -enable-kvm -net user,vlan=0,hostfwd=tcp::9022-:22,hostfwd=tcp::9080-:8080,hostfwd=tcp::13389-:3389 -net nic -nographic'
 alias ls='ls --color'
-alias xclip='xclip ; xclip -o | xclip -selection clipboard; xclip -o | while read msg; do notify-send $msg ; done'
+alias xclip='xclip ; xclip -o | xclip -selection clipboard; xclip -o | while read msg; do notify-send Clipboard $msg ; done'
 alias x11clip='xclip -o -selection clipboard'
 
 set -o vi
