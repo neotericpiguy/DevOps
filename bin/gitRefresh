@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+branch=`git branch --no-color| grep \* | awk '{print $2}'`
+
+git commit -a --amend --no-edit
+git push origin $branch -f
