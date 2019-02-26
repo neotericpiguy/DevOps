@@ -8,14 +8,14 @@ function precmd () {
       local staged=`git diff --cached --name-only 2>/dev/null| wc -l`
       local name=$(basename `git rev-parse --show-toplevel`)
       local info=$(git branch -avv --no-color | egrep "^\*"  | sed -r 's/^\*\ ([^\ ]*)[^:]*\[(.*)\].*/\1:\2/g')
-      info=$(echo $info | sed 's/ahead /\#\[fg=green\]↑\#\[fg=white\]/g;s/behind /\#\[fg=red\]↓\#\[fg=white\]/g;s/:\ //g')
+      info=$(echo $info | sed 's/ahead /\#\[fg=green\]↑\#\[fg=white,none\]/g;s/behind /\#\[fg=brightred\]↓\#\[fg=white\]/g;s/:\ //g')
       if [ "$modified" -gt 0  ]; then 
         info="#[fg=red]♦$modified#[fg=white]$info"
       fi
       if [ "$staged" -gt 0  ]; then 
         info="#[fg=green]+$staged#[fg=white]$info"
       fi
-      tmux set -qg status-left "#H:#S[$name-$info]"
+      tmux set -qg status-left "#H:#S[#[fg=brightgreen,bold]$name#[fg=white,none]-$info]"
     else
       tmux set -qg status-left "#H:#S"
     fi
@@ -73,7 +73,7 @@ export TERM=xterm
 setopt promptsubst          # allow paramater, command, so on in prompt
 setopt transient_rprompt    # hide RPROMPT after cmdline is executed
 
-zstyle :compinstall filename '/home/asian/.zshrc'
+zstyle :compinstall filename "/home/$USER/.zshrc"
 
 autoload -Uz compinit promptinit
 autoload -U colors && colors
