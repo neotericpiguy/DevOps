@@ -15,10 +15,15 @@ installPkgs() {
 #    apt update
     apt install zsh clang-format clang-tidy curl python3-pip -y
   else
-    sudo pacman -Sy
+    if [ `which yay` ]; then 
+      pkgCmd=yay
+    else
+      pkgCmd=pacman
+    fi
+    sudo $pkgCmd -Sy
 
     sudo sed -r -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
-    sudo pacman -S --needed rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip autocutsel --noconfirm 
+    sudo $pkgCmd -S --needed rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip autocutsel --noconfirm 
     sudo pip3 install --user pynvim 
   fi
 }
