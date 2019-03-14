@@ -28,4 +28,4 @@ set my_archive = +All\ Mail
 macro index,pager e  "<save-message>$my_archive<enter><enter><sync-mailbox><enter>" "Archive message"
 mailboxes \ \ \ \ $my_user
 
-set signature=
+set signature = "echo -e 'Jonathan Annua\n'|"

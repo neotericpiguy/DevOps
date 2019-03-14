@@ -1,5 +1,8 @@
 # Change the following line to a different editor you prefer.
-set editor="vim +7 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set tw=72 ft=mail noautoindent' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
+#set editor="vim +7 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set tw=72 ft=mail noautoindent' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
+#set editor="vim +7 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
+set editor="vim +/^$ ++1 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
+
 set markers=no
 set wrap=80
 set edit_headers=yes
@@ -16,6 +19,9 @@ set markers           = no 	# no ugly plus signs
 #https://wcm1.web.rice.edu/mutt-tips.html https://joeclark.org/ffaq.html
 #https://github.com/backalor/dotfiles/blob/master/mutt/muttrc
 set text_flowed=yes
+
+set fcc_clear=yes
+set mark_old=no
 
 set use_from=yes
 set alias_file= ~/.mutt/aliases
@@ -91,8 +97,9 @@ hdr_order Date From To Cc
 alternative_order text/plain text/html *
 auto_view text/html
 
-#  bind editor <Tab> complete-query
-#  bind editor ^T complete
+# https://ubuntuforums.org/showthread.php?t=1184518
+set sig_on_top
+
 bind editor <space> noop 
 
 # Store message headers locally to speed things up.
@@ -103,7 +110,6 @@ set header_cache = ~/.cache/mutt
 # Can be the same folder as header_cache.
 # This will cost important disk usage according to your e-mail amount.
 set message_cachedir = ~/.cache/mutt
-
 
 # Gmail-style keyboard shortcuts
 macro index,pager x  "<tag-entry>" "Select message"
@@ -144,8 +150,6 @@ macro index,pager a "<pipe-message>goobook add<return>" "add the sender address 
 #set pgp_encrypt_only_command="pgpewrap gpg --batch --quiet --no-verbose --output - --encrypt --textmode --armor --always-trust -- -r $my_keyid -r %r -- %f"
 #set pgp_encrypt_sign_command="pgpewrap gpg --passphrase-fd 0 --batch --quiet --no-verbose --textmode --output - --encrypt --sign %?a?-u %a? --armor --always-trust -- -r $my_keyid -r %r -- %f"
 #http://usersolved.com/questions/how-can-you-let-mutt-encrypt-mails-in-the-sent-mail-folder
-set fcc_clear=yes
-#set mark_old
 # set pgp_clearsign_command="gpg --no-verbose --batch --output - --passphrase-fd 0 --armor --textmode --clearsign %?a?-u %a? %f"
 # set pgp_decode_command="gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
 # set pgp_decrypt_command="gpg --passphrase-fd 0 --no-verbose --batch --output - %f"
