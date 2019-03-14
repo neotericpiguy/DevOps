@@ -23,7 +23,7 @@ installPkgs() {
     sudo $pkgCmd -Sy
 
     sudo sed -r -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
-    sudo $pkgCmd -S --needed rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip autocutsel --noconfirm 
+    sudo $pkgCmd -S --needed rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip ranger autocutsel --noconfirm 
     sudo pip3 install --user pynvim 
   fi
 }
