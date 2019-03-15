@@ -26,6 +26,7 @@ esac
 exit
 
 __DATA__
+therfore                                        ∴
 grinning face                                   😀
 smiling face with open mouth                    😃
 smiling face with open mouth & smiling eyes     😄
