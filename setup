@@ -53,7 +53,7 @@ setupNvim() {
   ln -sf $projectDir/confs/gitconfig ~/.gitconfig
   ln -sf $projectDir/confs/git_template ~/.git_template
 
-  mkdir -p ~/.mutt
+  mkdir -p ~/.mutt/cache # cache needs to be a directory
   pushd ~/.mutt
     find $projectDir/confs/mutt -type f -exec ln -sf {} \; 
   popd
