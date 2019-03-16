@@ -1,5 +1,5 @@
 # A basic .muttrc configs for key bindings and styles
-source "~/.mutt/muttrc.base
+source ~/.mutt/muttrc.base
 
 # Account spsectif settings
 set query_command = "goobook query '%s'" 

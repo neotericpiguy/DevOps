@@ -1,6 +1,4 @@
 # Change the following line to a different editor you prefer.
-#set editor="vim +7 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set tw=72 ft=mail noautoindent' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
-#set editor="vim +7 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
 set editor="vim +/^$ ++1 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
 
 set markers=no
@@ -9,12 +7,12 @@ set edit_headers=yes
 set from = "$my_realname <$imap_user>"
 
 # Set up preview pane for messages
-set pager_index_lines = 10 	# number of index lines to show
-set pager_context     = 3     # number of context lines to show
-set pager_stop        = yes   # don't go to next message automatically
-set menu_scroll       = yes   # scroll in menus
-set tilde             = yes   # show tildes like in vim
-set markers           = no 	# no ugly plus signs
+set pager_index_lines = 10  # number of index lines to show
+set pager_context     = 3   # number of context lines to show
+set pager_stop        = yes # don't go to next message automatically
+set menu_scroll       = yes # scroll in menus
+set tilde             = yes # show tildes like in vim
+set markers           = no  # no ugly plus signs
 
 #https://wcm1.web.rice.edu/mutt-tips.html https://joeclark.org/ffaq.html
 #https://github.com/backalor/dotfiles/blob/master/mutt/muttrc
@@ -34,6 +32,7 @@ bind editor <Tab> complete-query
 set ssl_verify_host = no
 set ssl_verify_dates = no
 
+bind index,pager g noop
 macro index gb '<enter-command>toggle sidebar_visible<enter><refresh>'
 macro pager gb '<enter-command>toggle sidebar_visible<enter><redraw-screen>'
 
@@ -45,22 +44,26 @@ bind index,pager \CO sidebar-open
 
 color sidebar_new yellow default
 
-color normal     white         default
+color attachment brightyellow  default
+color bold       brightyellow  default
+color error      brightred     default
 color hdrdefault green         default
+color index      brightwhite   default ~N
+color index      brightyellow  default ~F
+color index      red           default ~D
+color indicator  brightyellow  red
+color markers    brightred     default
+color message    white         default
+color normal     default       default
+color normal     white         default
 color quoted     green         default
 color quoted1    yellow        default
 color quoted2    red           default
-color signature  cyan          default
-color indicator  brightyellow  red
-color error      brightred     default
-color status     brightwhite   blue
-color tree       brightmagenta default
-color tilde      blue          default
-color attachment brightyellow  default
-color markers    brightred     default
-color message    white         default
 color search     brightwhite   magenta
-color bold       brightyellow  default
+color signature  cyan          default
+color status     brightwhite   blue
+color tilde      blue          default
+color tree       brightmagenta default
 
 # Colors for items in the reader
 color header brightyellow default "^(From|Subject):"
@@ -68,11 +71,9 @@ color header brightcyan   default ^To:
 color header brightcyan   default ^Cc:
 
 # Sidebar Patch --------------------------------------
-#set sidebar_delim   = ' '
 set sidebar_visible = yes
 set sidebar_width   = 30
-# set sidebar_shortpath = yes
-#color sidebar_new color221 color233
+#set sidebar_shortpath = yes
 
 # unset record
 unset imap_passive
@@ -115,14 +116,10 @@ set message_cachedir = ~/.mutt/cache
 macro index,pager x  "<tag-entry>" "Select message"
 macro pager gw "<enter-command>set wrap=0<enter><enter-command>set markers=no<enter>" "wrap 0"
 macro pager gW "<enter-command>set wrap=80<enter><enter-command>set markers=yes<enter>" "wrap 80"
-#macro index,pager c  "<mail>" "Compose email"
 macro index,pager gi "<change-folder>=INBOX<enter>" "Go to inbox"
 macro index,pager gg "<first-entry>" "First Message"
 macro index,pager G  "<last-entry>" "Last Message"
 macro index,pager s "<save-message>?" "Move to Folder"
-#macro index,pager gl "<change-folder>?"
-#macro index,pager l "<save-message>?" "Move to Label"
-set status_format="/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
 
 bind index,pager R group-reply
 
@@ -131,6 +128,8 @@ set pager_context=3
 set pager_stop=yes
 
 set index_format="%4C %Z %?X?A&-? %{%b %d} %-20.20L %?M?(#%03M)&(%4c)? %?y?(%.20Y) ?%s"
+set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
+set status_format="/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
 
 #Goo book https://gitlab.com/goobook/goobook
 macro index,pager a "<pipe-message>goobook add<return>" "add the sender address to Google contacts"
@@ -163,3 +162,6 @@ macro index,pager a "<pipe-message>goobook add<return>" "add the sender address 
 # set pgp_sign_command="gpg --no-verbose --batch --output - --passphrase-fd 0 --armor --detach-sign --textmode %?a?-u %a? %f"
 # set pgp_verify_command="gpg --no-verbose --batch --output - --verify %s %f"
 # set pgp_verify_key_command="gpg --no-verbose --batch --fingerprint --check-sigs %r"
+#
+#https://neomutt.org/feature/index-color
+
