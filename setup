@@ -52,6 +52,7 @@ setupNvim() {
   ln -sf $projectDir/confs/xinitrc ~/.xinitrc
   ln -sf $projectDir/confs/gitconfig ~/.gitconfig
   ln -sf $projectDir/confs/git_template ~/.git_template
+  ln -sf $projectDir/confs/mutt/mailcap ~/.mailcap
 
   mkdir -p ~/.mutt/cache # cache needs to be a directory
   pushd ~/.mutt

@@ -133,11 +133,11 @@ start_tmux() {
     tmux split-window -tstart -v -p50 
 
     tmux select-pane -t0 
-    tmux send-keys -tstart:1 "mutt -F ~/.confs/.muttrc.psl" C-m
+    tmux send-keys -tstart:1 "mutt -F ~/.mutt/muttrc" C-m
     tmux select-pane -t1 
-    tmux send-keys -tstart:1 "mutt -F ~/.confs/.muttrc.nmsu" C-m
+    tmux send-keys -tstart:1 "mutt -F ~/.mutt/muttrc.jannua" C-m
     tmux select-pane -t2 
-    tmux send-keys -tstart:1 "mutt -F ~/.confs/.muttrc" C-m
+    tmux send-keys -tstart:1 "mutt -F ~/.mutt/muttrc" C-m
 
     tmux attach-session -t start
 }
@@ -164,3 +164,6 @@ man() {
 }
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+#Terminal transparency
+transset-df -m 0.8 --id "$WINDOWID" 2&> /dev/null >/dev/null
