@@ -129,7 +129,22 @@ set pager_stop=yes
 
 set index_format="%4C %Z %?X?A&-? %{%b %d} %-20.20L %?M?(#%03M)&(%4c)? %?y?(%.20Y) ?%s"
 set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
-set status_format="/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
+#set status_format="/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
+
+set new_mail_command = "/usr/bin/notify-send \"asdf\""
+# --------------------------------------------------------------------------
+# VARIABLES – shown with their default values
+# --------------------------------------------------------------------------
+# Set the command you want NeoMutt to execute upon the receipt of a new email
+#set new_mail_command = ""
+# Linux example:
+# set new_command="notify-send --icon='/home/santiago/Pictures/neomutt.png' \
+#   'New Email in %f' '%n new messages, %u unread.' &"
+# OS X example:
+# set new_mail_command="terminal-notifier -title '%v' -subtitle 'New Mail in %f' \
+#   -message '%n new messages, %u unread.' -activate 'com.apple.Terminal'"
+# --------------------------------------------------------------------------
+
 
 #Goo book https://gitlab.com/goobook/goobook
 macro index,pager a "<pipe-message>goobook add<return>" "add the sender address to Google contacts"
@@ -164,4 +179,11 @@ macro index,pager a "<pipe-message>goobook add<return>" "add the sender address 
 # set pgp_verify_key_command="gpg --no-verbose --batch --fingerprint --check-sigs %r"
 #
 #https://neomutt.org/feature/index-color
+
+# use very high $read_inc to speed up reading hcache'd maildirs
+folder-hook . 'set read_inc=1000'
+# use lower value for reading slower remote IMAP folders
+#folder-hook ^imap 'set read_inc=100'
+## use even lower value for reading even slower remote POP folders
+#folder-hook ^pop 'set read_inc=1'
 

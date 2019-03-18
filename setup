@@ -42,6 +42,7 @@ setupNvim() {
 
   mkdir -p ~/.config/nvim
   mkdir -p ~/.config/dunst
+  mkdir -p ~/.config/mpv
 
   ln -sf $projectDir/bin ~/.bin
   ln -sf $projectDir/confs/init.vim ~/.config/nvim/init.vim
@@ -53,6 +54,7 @@ setupNvim() {
   ln -sf $projectDir/confs/gitconfig ~/.gitconfig
   ln -sf $projectDir/confs/git_template ~/.git_template
   ln -sf $projectDir/confs/mutt/mailcap ~/.mailcap
+  ln -sf $projectDir/confs/mpv.conf ~/.config/mpv/input.conf
 
   mkdir -p ~/.mutt/cache # cache needs to be a directory
   pushd ~/.mutt

@@ -166,4 +166,8 @@ man() {
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 #Terminal transparency
-transset-df -m 0.8 --id "$WINDOWID" 2&> /dev/null >/dev/null
+#
+[ -n st ] && transset-df -a 0.7 2&> /dev/null > /dev/null
+
+alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+
