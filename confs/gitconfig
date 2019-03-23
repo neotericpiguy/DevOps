@@ -1,31 +1,34 @@
 [user]
   name = Jonathan Annua
   email = neotericpiguy@gmail.com
+[alias]
+  prettylog = log --format='%Cred%h%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset%C(yellow)%d%Creset' --no-merges
+  prettierlog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  co = checkout
+  cm = commit
+  amend = commit -a --amend --no-edit
+  mfetch  = fetch --all
+  br = branch
+  stat = status -uno
+  brstat = branch -vvv --all
+  d = difftool
+  ls = ls-files
+  greview = push origin HEAD:refs/for/master
+  ctags = !.git/hooks/ctags
+  refresh = !~/.bin/gitRefresh
+  subtree-update= "!f() { rm $1 -rf; git cm -am \"Removed: subtree\" ; git fetch --all; git merge --squash -s ours --no-commit --allow-unrelated-histories $2; git read-tree --prefix=$1 -u $2; git reset HEAD~1; }; f"
 [push]
   default = simple
 [color]
   status = always
   branch = always
   log = always
-[alias]
-  prettylog = log --format='%Cred%h%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset%C(yellow)%d%Creset' --no-merges
-	prettierlog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	co = checkout
-	cm = commit
-	amend = commit -a --amend --no-edit
-	mfetch  = fetch --all
-	br = branch
-	stat = status -uno
-	brstat = branch -vvv --all
-	d = difftool
-	ls = ls-files
-	greview = push origin HEAD:refs/for/master
-	ctags = !.git/hooks/ctags
-  refresh = !~/.bin/gitRefresh
-
+[submodule]
+  recurse = true
 [diff]
   tool = vimdiff
+  submodule = log
 [difftool]
   prompt = false
 [merge]
@@ -33,11 +36,17 @@
 [receive]
   denyNonFastFowards = false
 [init]
-	templatedir = ~/.git_template
+  templatedir = ~/.git_template
 [core]
-	quotepath = false
+  quotepath = false
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[status]
+  submoduleSummary = true
+[branch]
+  autosetuprebase = always
+[pull]
+  rebase = true
