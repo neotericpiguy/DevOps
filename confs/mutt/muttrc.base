@@ -131,7 +131,7 @@ set index_format="%4C %Z %?X?A&-? %{%b %d} %-20.20L %?M?(#%03M)&(%4c)? %?y?(%.20
 set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
 #set status_format="/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
 
-set new_mail_command = "/usr/bin/notify-send \"asdf\""
+set new_mail_command = "/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
 # --------------------------------------------------------------------------
 # VARIABLES – shown with their default values
 # --------------------------------------------------------------------------

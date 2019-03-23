@@ -6,7 +6,8 @@ setxkbmap -option caps:escape # maps caps to escape key
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 dunst & 
-(sleep 5 && xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55) &
+#(sleep 5 && xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55) &
+(xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55) &
 
 google-chrome-beta --no-startup-window &
 
