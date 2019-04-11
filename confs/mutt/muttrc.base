@@ -36,6 +36,9 @@ bind index,pager g noop
 macro index gb '<enter-command>toggle sidebar_visible<enter><refresh>'
 macro pager gb '<enter-command>toggle sidebar_visible<enter><redraw-screen>'
 
+#open html in a real browser
+macro attach B "<pipe-message>cat > /tmp/mutt.html; xdg-open /tmp/mutt.html<enter>"
+
 # Ctrl-n, Ctrl-p to select next, previous folder.
 # Ctrl-o to open selected folder.
 bind index,pager \CP sidebar-prev
