@@ -1,10 +1,10 @@
 # Change the following line to a different editor you prefer.
-set editor="vim +/^$ ++1 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
+#set editor="vim +/^$ ++1 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set spell spelllang=en' -c 'setlocal fo+=aw'"
+set editor="vim +/^$ ++1 -c 'set nobackup' -c 'set noswapfile' -c 'set nowritebackup' -c 'set spell spelllang=en' -c 'set wrap linebreak nolist' -c 'set fo='"
 
 set markers=no
 set wrap=80
 set edit_headers=yes
-set from = "$my_realname <$imap_user>"
 
 # Set up preview pane for messages
 set pager_index_lines = 10  # number of index lines to show

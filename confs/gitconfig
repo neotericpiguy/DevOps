@@ -1,5 +1,5 @@
 [user]
-  name = Jonathan Annua
+	name = Jonathan
   email = neotericpiguy@gmail.com
 [alias]
   prettylog = log --format='%Cred%h%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset%C(yellow)%d%Creset' --no-merges
@@ -17,7 +17,7 @@
   greview = push origin HEAD:refs/for/master
   ctags = !.git/hooks/ctags
   refresh = !~/.bin/gitRefresh
-  subtree-update= "!f() { rm $1 -rf; git cm -am \"Removed: subtree\" ; git fetch --all; git merge --squash -s ours --no-commit --allow-unrelated-histories $2; git read-tree --prefix=$1 -u $2; git reset HEAD~1; }; f"
+  subtree-pull= "!f() { rm $1 -rf; git cm -am \"Removed: subtree\" ; git fetch --all; git merge --squash -s ours --no-commit --allow-unrelated-histories $2; git read-tree --prefix=$1 -u $2; git reset HEAD~1; }; f"
 [push]
   default = simple
 [color]
