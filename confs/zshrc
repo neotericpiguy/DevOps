@@ -138,7 +138,7 @@ start_tmux() {
     tmux select-pane -t1 
     tmux send-keys -tstart:1 "neomutt -F ~/.mutt/muttrc.jannua" C-m
     tmux select-pane -t2 
-    tmux send-keys -tstart:1 "neomutt -F ~/.mutt/muttrc" C-m
+    tmux send-keys -tstart:1 "neomutt -F ~/.mutt/muttrc.nmsu" C-m
 
     tmux attach-session -t start
 }
@@ -168,7 +168,7 @@ man() {
 
 #Terminal transparency
 #
-[ -n st ] && transset-df -a 0.7 2&> /dev/null > /dev/null
+[ -n st ] && transset-df -a 0.9 2&> /dev/null > /dev/null
 
 alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 
