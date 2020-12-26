@@ -11,21 +11,22 @@ _checkUser() {
 }
 
 installPkgs() {
-  if [ -e /etc/apt/sources.list ]; then
-#    apt update
-    apt install zsh clang-format clang-tidy curl python3-pip -y
-  else
+#  if [ -e /etc/apt/sources.list ]; then
+##    apt update
+#    apt install zsh clang-format clang-tidy curl python3-pip -y
+#  else
     if [ `which yay` ]; then 
       pkgCmd=yay
     else
-      pkgCmd=pacman
+      pkgCmd="sudo pacman"
     fi
-    sudo $pkgCmd -Sy
+    $pkgCmd -Sy
 
     sudo sed -r -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
-    sudo $pkgCmd -S --needed rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip ranger autocutsel --noconfirm 
-    sudo pip3 install --user pynvim 
-  fi
+#    $pkgCmd -S --needed rkt openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip ranger autocutsel --noconfirm 
+    $pkgCmd -S --needed openssl git ctags tmux neovim zsh clang-tools-extra llvm llvm-libs python python-pip ranger autocutsel --noconfirm 
+    pip3 install --user pynvim 
+#  fi
 }
 
 setupNvim() {

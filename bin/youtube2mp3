@@ -3,7 +3,9 @@
 #youtube-dl -i -c -x --audio-quality 0 \
 #  --audio-format mp3 \
 #  "$1"
-youtube-dl --download-archive downloaded.txt --no-post-overwrites -ciwx \
+youtube-dl --download-archive ~/remixes/downloaded.txt --no-post-overwrites -ciwx \
+  --embed-thumbnail \
+  --add-metadata \
   --audio-quality 0 \
   --audio-format mp3 -o "%(title)s.%(ext)s" \
   "$1"

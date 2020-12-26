@@ -1,14 +1,16 @@
 [user]
-	name = Jonathan
+	name = neotericpiguy
   email = neotericpiguy@gmail.com
+	signingkey = C92ABA5B321250BC12E2B80746568868D5CA700F
 [alias]
   prettylog = log --format='%Cred%h%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset%C(yellow)%d%Creset' --no-merges
   prettierlog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   co = checkout
   cm = commit
+  cp = cherry-pick
   amend = commit -a --amend --no-edit
-  mfetch  = fetch --all
+  mfetch  = fetch --all --prune
   br = branch
   stat = status -uno
   brstat = branch -vvv --all
@@ -27,12 +29,14 @@
 [submodule]
   recurse = true
 [diff]
-  tool = vimdiff
+	tool = vimdiff
   submodule = log
 [difftool]
   prompt = false
-[merge]
   tool = vimdiff
+  color = off
+[merge]
+	tool = vimdiff
 [receive]
   denyNonFastFowards = false
 [init]
@@ -50,3 +54,5 @@
   autosetuprebase = always
 [pull]
   rebase = true
+[commit]
+	gpgsign = true

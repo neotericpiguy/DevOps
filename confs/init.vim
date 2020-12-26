@@ -31,27 +31,27 @@ Plug 'junegunn/vim-easy-align'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'https://github.com/tpope/vim-repeat.git'
 
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+"if has('nvim')
+"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"else
+"  Plug 'Shougo/deoplete.nvim'
+"  Plug 'roxma/nvim-yarp'
+"  Plug 'roxma/vim-hug-neovim-rpc'
+"endif
 
 call plug#end()
 
 let g:deoplete#enable_at_startup = 1
 
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 filetype plugin indent on
 
 let mapleader = "\<Space>"
 nnoremap <Leader>w :wa<CR>:ClangFormat<CR>
 
-autocmd! BufWritePost * Neomake!
+" autocmd! BufWritePost * Neomake!
 
 " Automatically open, but do not go to (if there are errors) the quickfix /
 " location list window, or close it when is has become empty.
@@ -68,7 +68,7 @@ function! FZFExecute()
   " Remove trailing new line to make it work with tmux splits
   let directory = substitute(system('git rev-parse --show-toplevel'), '\n$', '', '')
   if !v:shell_error
-   call fzf#run({'sink': 'e', 'dir': directory, 'source': 'git ls-files', 'tmux_height': '40%'})
+   call fzf#run({'sink': 'e', 'dir': directory, 'source': 'git ls-files --recurse-submodules', 'tmux_height': '40%'})
 "   call fzf#run({'sink*':  function('s:my_fzf_handler'), 'dir': directory, 'source': 'git ls-files', 'tmux_height': '40%', 'options': '--expect=ctrl-t,ctrl-x,ctrl-v' })
   else
     FZF
@@ -76,11 +76,22 @@ function! FZFExecute()
 endfunction
 command! FZFExecute call FZFExecute()
 
-map <C-k> :FZFExecute<CR>
+function! AStyle()
+  let l = winsaveview()
+  :%! indent -linux
+  call winrestview(l)
+endfunction
+command! FZFExecute call FZFExecute()
+
+map <C-p> :FZFExecute<CR>
 map <C-t> :Tags<CR>
 map <C-b> :Buffers<CR>
+map \ls :call AStyle() <CR>
+map \dd :windo diffthis <CR>
+map \do :windo diff off <CR>:windo set noscrollbind<CR>
 
-set makeprg=make\ -j`nproc`
+
+set makeprg=make\ -j2
 
 let g:airline_theme='ubaryd'
 
@@ -93,7 +104,7 @@ set nowrap
 syntax on
 set incsearch
 set number
-set relativenumber
+" set relativenumber
 set autoindent
 set nohlsearch
 set cursorline
@@ -114,20 +125,24 @@ nmap ga <Plug>(EasyAlign)
 nmap \ll :Make<CR>
 map \lc :Make clean<CR>:Make<CR>
 
-set autochdir  "might be import tant for ctags
+" set autochdir  "might be import tant for ctags
 set tags+=./tags
 
 nmap ,l :set list!<CR>
 
 " Fugitive bindings
 map \gs :Gstatus<CR>
-map \gd :Gdiff HEAD^<CR>
-map gca :Git commit -a --amend<CR>
-map grev :Git push origin HEAD:refs/for/master<CR>
+map \gd :Gdiff 
+map \gg :Ggrep 
+map \ga :!git add % <CR><CR>
+map \gc :Gcommit<CR>
+
+map \dd :windo diffthis<CR>
+map \do :windo diffoff<CR>
 
 map tt :TagbarOpenAutoClose<CR>
-map <C-n> :cn<CR>
-map <C-p> :cp<CR>
+" map <C-n> :cn<CR>
+" map <C-p> :cp<CR>
 
 hi Folded ctermbg=000
 hi Folded ctermfg=216
@@ -161,7 +176,7 @@ let g:clang_format#style_options = {
             \}}
 
 "Auto format
-autocmd FileType c,cpp ClangFormatAutoEnable
+" autocmd FileType c,cpp ClangFormatAutoEnable
 
 "Color stuff to help view things
 set background=dark
@@ -169,3 +184,10 @@ hi Visual ctermfg=White ctermbg=LightBlue cterm=none
 
 "Indent characters
 let g:indentLine_char = '.'
+
+nnoremap <Tab> <Esc>
+vnoremap <Tab> <Esc>gV
+onoremap <Tab> <Esc>
+" cnoremap <Tab> <C-C><Esc>
+inoremap <Tab> <Esc>`^
+inoremap <Leader><Tab> <Tab>
