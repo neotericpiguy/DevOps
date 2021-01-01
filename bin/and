@@ -1,0 +1,704 @@
+#!/bin/bash
+
+set -e
+
+getDefaultLauncher() {
+  adb shell cmd shortcut get-default-launcher
+  #adb shell cmd package set-home-activity "your.package/.YourLauncherActivity"
+  adb shell cmd package resolve-activity http://www.example.com/ | grep -i packagename
+
+  # adb shell pm disable com.android.launcher
+#  adb shell su -c pm disable org.mozilla.firefox
+#  adb shell am start -a android.intent.action.VIEW -d http://www.stackoverflow.com
+
+  # start chrome
+#  adb shell am start \
+#-n com.android.chrome/com.google.android.apps.chrome.Main \
+#-a android.intent.action.VIEW -d 'file:///sdcard/lazer.html'
+
+# help iwith scrcpy
+#adb shell 'echo "chrome --disable-fre --no-default-browser-check --no-first-run" > /data/local/tmp/chrome-command-line'
+
+}
+
+smsLimit() {
+  # 5 sms in 5 minutes
+  local smsCount=${1-5}
+  local minutes=${2-15}
+  adb shell "
+settings put global sms_outgoing_check_max_count $smsCount
+settings put secure sms_outgoing_check_max_count $smsCount
+settings put system sms_outgoing_check_max_count $smsCount
+settings put global sms_outgoing_check_interval_ms $((minutes*60*1000))
+settings put secure sms_outgoing_check_interval_ms $((minutes*60*1000))
+settings put system sms_outgoing_check_interval_ms $((minutes*60*1000))
+"
+  adb shell "
+settings get global sms_outgoing_check_max_count
+settings get secure sms_outgoing_check_max_count
+settings get system sms_outgoing_check_max_count
+settings get global sms_outgoing_check_interval_ms
+settings get secure sms_outgoing_check_interval_ms
+settings get system sms_outgoing_check_interval_ms
+"
+
+}
+
+rotate() {
+  adb shell "settings put system accelerometer_rotation $1"
+}
+
+landscape() {
+  adb shell "settings put system user_rotation 1"
+  adb shell "settings put system user_rotation 3"
+}
+
+computerMode() {
+#  landscape
+  adb shell wm density 240
+#  adb shell wm density 200
+#  adb shell wm density 280
+#  adb shell wm density 300
+
+  input disable
+}
+
+phoneMode() {
+  portrait
+  adb shell wm density 420
+  input enable
+}
+
+input() {
+  #enable or disable
+  adb shell ime list -a | grep mId | awk '{print $1}' | sed -r 's/.*=//g' | while read line; do 
+    adb shell ime $1 $line &
+  done
+  wait
+}
+
+portrait() {
+  adb shell "settings put system user_rotation 0"
+  adb shell "settings put system user_rotation 2"
+}
+
+remoteTempFolder="/data/local/tmp"
+
+clear() {
+  _root service call notification 1 >  /dev/null
+  killall mpv
+}
+
+urlOpen() {
+  adb shell am start -a android.intent.action.VIEW -d "\"$1\""
+}
+
+notification() {
+  local excludes="deskclock|googlequick|downloads|maps|nest|vending|pandora|locus|ippro"
+  local nCount="`adb shell dumpsys notification | grep -i notificationrecord  | awk '{print $2}' | egrep -v "($excludes)" | wc -l`"
+
+  if [ $nCount -gt 0 ]; then
+    echo Notification
+    notify-send "`adb shell dumpsys notification | grep -i notificationrecord | awk '{print $2}' | egrep -v \"($excludes)\"`"
+
+#    if [ `ps aux | egrep -i 'mpv' | wc -l` -eq 1 ]; then
+#       mpv ~/Downloads/analog-watch-alarm_daniel-simion.mp3 > /dev/null 2>1 &
+#    fi
+  fi
+}
+
+resetprop() {
+  adb shell "su -c resetprop $@"
+}
+
+# hotspot() {
+#   # Start Wifi tethering
+# # adb shell service call connectivity 24 i32 0 
+# # # Stop Wifi tethering
+# # adb shell service call connectivity 25 i32 0
+# }
+
+hotspotEnable() {
+  # Enable tethering on boot with adb wireless
+#   adb shell su -c mkdir -p /sbin/.magisk/modules/.core/service.d/
+#   echo "resetprop net.tethering.noprovisioning true
+# settings put global sms_outgoing_check_max_count 2000
+# settings put global sms_outgoing_check_interval_ms 1800000 
+# resetprop ro.debuggable 1
+# resetprop service.adb.tcp.port 5555
+# stop adbd
+# start adbd
+#   " | adb shell su -c tee /sbin/.magisk/modules/.core/service.d/hotspotProp
+#   adb shell su -c chmod 755 /sbin/.magisk/modules/.core/service.d/hotspotProp
+
+  echo "resetprop net.tethering.noprovisioning true
+settings put global sms_outgoing_check_max_count 600
+settings put global sms_outgoing_check_interval_ms 900000
+resetprop ro.debuggable 1
+resetprop service.adb.tcp.port 5555
+stop adbd
+start adbd
+  " | adb shell su -c tee /data/adb/service.d/service.sh
+  adb shell su -c chmod 755 /data/adb/service.d/service.sh
+
+# weird keyboard hide button
+#wm overscan 0,0,0,-100
+}
+
+itemAll() {
+  for y in `seq 1500 150 1800`; do
+    for x in  `seq 130 270 1000`; do
+      tap $x $y &
+    done
+      sleep 0.2
+  done
+}
+
+claimAll() {
+  tap 887 1635 &
+  tap 567 1023 &
+  tap 350 1275 &
+  wait
+}
+
+isScreenState() {
+#    'result 390 373 666 445 result'
+#    'battle 900 1034 1064 1126 auto'   locaiton moved?
+  local states=(
+    'battle 905 975 1070 1047 auto'
+    'battle 885 92 1075 154 menu'
+    'result 390 353 666 445 result'
+#    'result 231 471 469 528 confirm'
+#    'result 0 471 800 528 adventureString'
+  )
+
+  local image=screen.png
+  screencap $image
+
+  echo "" > state.txt
+  for ((i = 0; i < ${#states[@]}; i++)); do #  for i in `seq 0 ${#states[@]}`; do 
+    state=`echo "${states[$i]}" | awk '{print $1}'`
+    x1=`echo "${states[$i]}" | awk '{print $2}'`
+    y1=`echo "${states[$i]}" | awk '{print $3}'`
+    x2=`echo "${states[$i]}" | awk '{print $4}'`
+    y2=`echo "${states[$i]}" | awk '{print $5}'`
+    string=`echo "${states[$i]}" | awk '{print $6}'`
+
+    local dim=$((x2-x1))x$((y2-y1))+$x1+$y1
+
+    if [[ "$@" =~ "$state" ]]; then
+      (convert $image -crop $dim ${string}_crop.png ; tesseract ${string}_crop.png - >> state.txt 2> /dev/null) &
+    fi
+
+  done
+  wait
+
+#  cat state.txt
+  for ((i = 0; i < ${#states[@]}; i++)); do #  for i in `seq 0 ${#states[@]}`; do 
+    string=`echo "${states[$i]}" | awk '{print $6}'`
+    if egrep -i "$string" state.txt; then
+      return 0
+    fi
+  done
+  
+  return 1
+}
+
+screenStateWrapper() {
+  local states="`screenState`"
+
+  echo "$states" | sed -r 's/.*auto.*/Fight/g;s/\r//g;s/\n//g'
+}
+
+mainScreen() {
+  scrcpy --window-title 'main'
+}
+
+ocr() {
+  local image=${1?"image"}
+  local cropImage=${image%.*}_crop.png
+  local x1=$2
+  local y1=$3
+  local x2=$4
+  local y2=$5
+  local string=$6
+
+  local dim=$((x2-x1))x$((y2-y1))+$x1+$y1
+
+  convert $image -crop $dim $cropImage
+  tesseract $cropImage ${image%.*} > /dev/null 2>&1
+
+  local errCode=1
+  if egrep --color=auto -i "$string" ${image%.*}.txt; then
+    errCode=0
+  fi
+
+  [ -e $cropImage ] && rm $cropImage
+  [ -e ${image%.*}.txt ] && rm ${image%.*}.txt
+  return $errCode
+}
+
+_root() {
+  adb shell "su -c $@"
+}
+
+toggleAuto() {
+  tap 984 1016 &
+}
+
+screencap() {
+  local filename=${1?"Filename"}
+ adb exec-out screencap -p > $filename
+#  import -window main $filename
+}
+
+isScreen() {
+# 126x62+957+1048 Auto
+# 220x56+426+385 Result
+# 575x78+257+464 Confirm Quest
+
+  local dim=$1
+  local word=$2
+
+  local tempScreenImageBase=`mktemp`
+  local tempScreenImage=${tempScreenImageBase}.png
+  local tempScreenCropImage=${tempScreenImageBase}_crop.png
+  screencap $tempScreenImage
+  convert $tempScreenImage -crop $dim $tempScreenCropImage
+  tesseract $tempScreenCropImage $tempScreenImageBase > /dev/null 2>&1
+
+  [ -e ${tempScreenImageBase} ] && rm ${tempScreenImageBase}
+  [ -e ${tempScreenImage} ] && rm ${tempScreenImage}
+  [ -e ${tempScreenCropImage} ] && rm ${tempScreenCropImage}
+
+  if ! grep -i "$word" ${tempScreenImageBase}.txt; then
+    [ -e ${tempScreenImageBase}.txt ] && rm ${tempScreenImageBase}.txt
+    return 1
+  fi
+
+  [ -e ${tempScreenImageBase}.txt ] && rm ${tempScreenImageBase}.txt
+  return 0
+}
+
+isScreenResult() {
+   if isScreen 220x56+426+385 Result; then
+     return 0
+   fi
+
+   if isScreen 575x78+257+464 'Confirm.*Quest'; then
+     return 0
+   fi
+
+   return 1
+}
+
+toggleHotspot() {
+    adb shell am start -n com.android.settings/.TetherSettings
+}
+
+selectAll() {
+  for y in `seq 550 200 1300`; do
+    for x in  `seq 120 200 1000`; do
+      tap $x $y &
+    done
+      sleep 0.2
+  done
+}
+
+requip() {
+  tap 550 950 &
+  echo -n "requip "
+  sleep 5
+
+  tap 1000 1500 &
+  echo -n "reset "
+  sleep 1
+
+  tap 300 1020 &
+  sleep 5
+
+  tap 100 1500 &
+  echo -n "finish "
+  sleep 1
+
+  tap 300 1020 &
+  sleep 5
+
+  tap 600 1500 &
+}
+
+adbWirelessSetup() {
+  adb devices | grep -v 'List of devices' | cut -f1 | xargs adb disconnect
+
+  ip r | grep -i 'default via'| awk '{print $3}' | xargs adb connect
+}
+
+adbWireless() {
+  local bitrate="${1-1M}"
+#  adbWirelessSetup
+  # chrome no wrky when screen off -S
+#  scrcpy --stay-awake --turn-screen-off --bit-rate $bitrate --max-size 800 --shortcut-mod lctrl
+  scrcpy --stay-awake --turn-screen-off --bit-rate $bitrate --shortcut-mod lctrl
+#  scrcpy --bit-rate $bitrate
+}
+
+nextQuest() {
+  tap 600 500 &
+}
+
+prevQuest() {
+  tap 300 800 &
+}
+
+battle() {
+  tap 600 1620 &
+}
+
+mud() {
+  local lastCmd=""
+  while read line; do
+    if [ "$line" == "" ] ; then
+      echo $lastCmd
+      $lastCmd
+    else
+      $line
+      lastCmd=$line
+    fi
+    echo -n "gsummoner> "
+  done
+}
+
+keys() {
+  keepAwake &
+  while :; do
+    read -rsn1 key
+    case $key in
+      "\`")
+        cmd=""
+        tap 984 1016 &
+        ;;
+      a)
+        cmd=""
+        swipe 140 1296 140 $((1296-900)) 100 &
+        ;;
+      s)
+        cmd=""
+        swipe 405 1296 405 $((1296-900)) 100 &
+        ;;
+      d)
+        cmd=""
+        swipe 668 1296 668 $((1296-900)) 100 &
+        ;;
+      f)
+        cmd=""
+        swipe 942 1296 942 $((1296-900)) 100 &
+        ;;
+      g)
+        cmd="itemAll"
+        swipe 942 1296 942 $((1296-900)) 100 &
+        ;;
+      1)
+        cmd="ok"
+        ;;
+      2)
+        cmd="skip"
+        ;;
+      4)
+        cmd="nextQuest"
+        ;;
+      5)
+        cmd="battle"
+        ;;
+      6)
+        cmd="redeploy"
+        ;;
+      7)
+        cmd="prevQuest"
+        ;;
+      9)
+        cmd="unlock"
+        ;;
+      -)
+        cmd="requip"
+        ;;
+      q)
+        cmd="prevParty"
+        ;;
+      w)
+        cmd="nextParty"
+        ;;
+      e)
+        cmd="selectAll"
+        ;;
+      r)
+        cmd="claimAll"
+        ;;
+    esac
+
+    echo $cmd
+    temp
+    $cmd &
+  done
+}
+
+
+skip() {
+  tap 930 1200 &
+  tap 350 1000 &
+}
+
+ok() {
+  ok_noBottom
+  tap $((RANDOM%10+500)) $((RANDOM%10+900)) &
+  tap $((RANDOM%10+500)) $((RANDOM%10+1000)) &
+  tap 500 1110 & 
+  tap 600 1400 &
+  tap 600 1800 & 
+  tap $((RANDOM%10+600)) 1200 &
+}
+
+ok_noBottom() {
+  echo -n "ok! > "
+  temp
+  tap 542 1382 & 
+  tap 550 1250 &
+}
+
+watch() {
+  temp
+  notification
+}
+
+tempRaw() {
+  echo "scale=2; `adb shell dumpsys battery | grep -i temperature | awk '{print $2}'` / 10 * 9/5 +32" | bc -l
+}
+
+temp() {
+  local temp=$(echo "scale=2; `adb shell dumpsys battery | grep -i temperature | awk '{print $2}'` / 10 * 9/5 +32" | bc -l)
+  local bat=`adb shell dumpsys battery | grep -i level | awk '{print $2}'`
+  local min=50
+  local max=114
+
+  if [ `echo "$temp < $min" | bc -l` -eq 1 ]; then
+    echo "Temp LOW!"
+    if [ `ps aux | egrep -i 'mpv' | wc -l` -eq 1 ]; then
+      mpv ~/Downloads/analog-watch-alarm_daniel-simion.mp3 > /dev/null 2>1 &
+    fi
+  fi
+  if [ `echo "$temp > $max" | bc -l` -eq 1 ]; then
+    echo "Temp HIGH!"
+    if [ `ps aux | egrep -i 'mpv' | wc -l` -eq 1 ]; then
+#      mpv ~/Downloads/analog-watch-alarm_daniel-simion.mp3 > /dev/null 2>1 &
+      killall xvideod youtube-dl nc
+    fi
+  fi
+
+  adb shell input keyevent mouse 
+  echo "$min < $temp F < $max ${bat}%"
+}
+
+loop() {
+  while :; do
+    while isScreenState result; do 
+      adb shell input keyevent mouse 
+      redeploy 
+      redeploy 
+      redeploy 
+      echo -n "."
+    done
+    adb shell input keyevent mouse 
+    temp
+    sleep 1
+  done
+}
+
+redeploy() {
+  echo redeploy!
+  tap 100 1800 &
+  tap 300 1400 &
+  ok_noBottom
+}
+
+_rw() {
+  echo "Mounting Read/Write"
+  _root "mount -o rw,remount /system"
+}
+
+_ro() {
+  echo "Mounting Read/Only"
+  _root "mount -o ro,remount /system"
+}
+
+screenshot() {
+  import -window '- - mpv' `date +%s`.jpg
+}
+
+pull() {
+  local file=${1?"file"}
+
+  _root "cp $file $remoteTempFolder"
+  _root "chmod 644 $remoteTempFolder/`basename $file`"
+  adb pull $remoteTempFolder/`basename $file`
+}
+
+screen() {
+  adb shell screenrecord --output-format=h264 -  | mpv --framedrop=vo --fps=6000 -
+}
+
+push() {
+  local file=${1?"file"}
+  local dest=${2?"dest"}
+
+  adb push $file $remoteTempFolder
+
+  echo "cp $remoteTempFolder/`basename $file` $dest"
+#  _rw
+  _root "cp $remoteTempFolder/`basename $file` $dest"
+#  _ro
+}
+
+miniScreen() {
+  scrcpy -c 1224:1050:0:0
+}
+
+splitScreen() {
+  local bitrate="${1-10k}"
+
+  scrcpy -m 1024 --bit-rate $bitrate  -c 1224:1200:0:0 &
+  sleep 2
+  scrcpy -m 1024 --bit-rate $bitrate -c 1224:1000:0:1200 &
+  wait
+}
+
+keepAwake() {
+  while true; do 
+    adb shell input keyevent mouse 
+    sleep 1
+  done
+}
+
+tap() {
+  adb shell input tap $1 $2 
+}
+
+prevParty() {
+  swipe 100 800 1000 800 100
+}
+
+nextParty() {
+  swipe 1000 800 100 800 100
+}
+
+swipe() {
+  adb shell input swipe $1 $2 $3 $4 $5
+}
+
+unlock() {
+  adb shell input keyevent KEYCODE_WAKEUP
+  adb shell input keyevent 82 # unlock
+  adb shell input text `cat ~/.bin/pin`
+  adb shell input keyevent 66
+}
+
+lock() {
+  adb shell input keyevent KEYCODE_POWER
+}
+
+hotspot() { # Not working
+  adb shell am start -n com.android.settings/.TetherSettings
+#  adb shell input keyevent 20
+  adb shell input keyevent 66
+  adb shell input keyevent 66
+  adb shell input keyevent 66
+}
+
+hotspotPhone() { # Not working
+  am start -n com.android.settings/.TetherSettings
+  input keyevent 66
+  input keyevent 66
+  input keyevent 66
+}
+
+wakePhone() {
+  if adb shell dumpsys power  | grep -i partial_wake_lock; then
+    echo Phone awake
+  else
+    echo Phone asleep
+#     adb shell dumpsys power | awk -F"[ =]" '/mWakefulness=/ { mw=$NF; }
+# /mHoldingWakeLockSuspendBlocker=/ {mh=$NF;}
+# END {
+#   print mw
+#   print mh
+# }'
+#    adb shell input keyevent KEYCODE_WAKEUP
+#    adb shell input keyevent 82 # unlock
+#    adb shell input text `pass Accounts/Pixel2` 
+#    adb shell input keyevent 66
+  fi
+}
+
+home() {
+  adb shell input keyevent KEYCODE_HOME
+}
+
+openSnapchat() {
+  adb shell "
+  input keyevent KEYCODE_HOME
+  input keyevent KEYCODE_HOME
+  input keyevent KEYCODE_HOME
+  input keyevent KEYCODE_HOME
+  input keyevent KEYCODE_HOME
+  monkey -p com.snapchat.android 1
+  input keyevent KEYCODE_BACK
+  input keyevent KEYCODE_BACK
+  input keyevent KEYCODE_BACK
+  input keyevent KEYCODE_BACK
+  input keyevent KEYCODE_BACK
+  input keyevent KEYCODE_BACK
+  input keyevent KEYCODE_BACK
+  input keyevent KEYCODE_BACK
+  monkey -p com.snapchat.android 1"
+
+  ./and tap 30 1700
+  sleep 0.5
+
+  ./and tap 330 100
+  sleep 0.5
+
+  local person=${1:-nom2nom}
+
+  echo $person
+
+  adb shell input text "$person"
+
+  ./and tap 330 300
+  sleep 1
+  adb shell input keyevent KEYCODE_BACK
+}
+
+text() {
+  adb shell input text $(echo "$@" | sed 's/ /\%s/g')
+  adb shell input keyevent 66
+}
+
+mediaScan() {
+#  adb shell am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard
+adb shell "find /mnt/sdcard/Music/ -exec am broadcast \
+    -a android.intent.action.MEDIA_SCANNER_SCAN_FILE \
+    -d file://{} \\;"
+}
+
+textPrompt() {
+  while read line; do
+    adb shell input text $(echo "$line" | sed 's/ /\%s/g')
+    adb shell input keyevent 66
+  done
+}
+
+main() {
+  # adb shell svc power stayon usb
+
+  $1 ${@:2}
+}
+
+main $@
