@@ -5,8 +5,10 @@ set -e
 bookmark=$(cat ~/.bin/bookmarks | dmenu -l 12)
 bookmark="`echo $bookmark | sed -r 's/^/http:\/\//g;s/http:\/\/http/http/g'`"
 
+echo $bookmark
 if [ ! "$bookmark" == "" ]; then
-  if [ "$bookmark" == "clipboard" ]; then
+  if [ "$bookmark" == "http://clipboard" ]; then
+    echo "`xclip -o`"
     google-chrome --app="`xclip -o`"
   else
     google-chrome --app="$bookmark"
