@@ -132,8 +132,12 @@ hotspotEnable() {
 #   adb shell su -c chmod 755 /sbin/.magisk/modules/.core/service.d/hotspotProp
 
   echo "resetprop net.tethering.noprovisioning true
+echo settings put global sms_outgoing_check_max_count 600
 settings put global sms_outgoing_check_max_count 600
-settings put global sms_outgoing_check_interval_ms 900000
+echo settings put global sms_outgoing_check_interval_ms 60000
+settings put global sms_outgoing_check_interval_ms 60000
+settings get global sms_outgoing_check_max_count
+settings get global sms_outgoing_check_interval_ms
 resetprop ro.debuggable 1
 resetprop service.adb.tcp.port 5555
 stop adbd
