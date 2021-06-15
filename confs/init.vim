@@ -83,6 +83,7 @@ function! AStyle()
 endfunction
 command! FZFExecute call FZFExecute()
 
+map <C-k> :e %:h<CR>
 map <C-p> :FZFExecute<CR>
 map <C-t> :Tags<CR>
 map <C-b> :Buffers<CR>
@@ -149,6 +150,7 @@ hi Folded ctermfg=216
 
 autocmd FileType make setlocal noexpandtab
 let g:tex_flavor='latex'
+autocmd BufNewFile,BufRead *.scad set syntax=c
 
 " Lambda formaterr
 xmap cf :ClangFormat<CR>
@@ -177,6 +179,7 @@ let g:clang_format#style_options = {
 
 "Auto format
 " autocmd FileType c,cpp ClangFormatAutoEnable
+autocmd FileType scad ClangFormatAutoEnable
 
 "Color stuff to help view things
 set background=dark

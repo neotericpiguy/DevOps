@@ -1,0 +1,11 @@
+#!/bin/bash
+
+file=`mktemp`.png
+
+main () {
+  import $file
+  xclip -selection clipboard -t image/png -i $file
+  rm $file
+}
+
+main $@

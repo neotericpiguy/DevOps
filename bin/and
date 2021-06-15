@@ -604,6 +604,20 @@ unlock() {
   adb shell input keyevent 66
 }
 
+delfourth() {
+  echo "Select event"
+  and tap 300 520 
+  sleep 1 
+  echo "Open options"
+  and tap 1000 100
+  sleep 1 
+  echo "Select Delete"
+  adb shell "input keyevent 66; input keyevent 66 "
+  sleep 1 
+  echo "select this and following events"
+  adb shell "input keyevent 20; input keyevent 66;input keyevent 61; input keyevent 61; input keyevent 61; input keyevent 66 "
+}
+
 lock() {
   adb shell input keyevent KEYCODE_POWER
 }
