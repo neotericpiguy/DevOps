@@ -194,3 +194,5 @@ onoremap <Tab> <Esc>
 " cnoremap <Tab> <C-C><Esc>
 inoremap <Tab> <Esc>`^
 inoremap <Leader><Tab> <Tab>
+
+colorscheme industry
