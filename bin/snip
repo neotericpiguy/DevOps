@@ -5,7 +5,9 @@ file=`mktemp`.png
 main () {
   import $file
   xclip -selection clipboard -t image/png -i $file
-  rm $file
+
+  # keep image for 1 hour
+  sleep $((1*60*60)); rm $file
 }
 
 main $@
