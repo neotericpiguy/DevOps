@@ -11,7 +11,7 @@ dunst &
 
 google-chrome-beta --no-startup-window &
 
-while :; do xsetroot -name "`curl -s "wttr.in/?format=%l:+%t%w"` `date +"%a %b %d, %Y %H:%M %Z"` " ; sleep 60 ; done &
+while :; do xsetroot -name "`~jannua/.bin/statusbar`" ; sleep 60 ; done &
 hsetroot -center ~/.icons/wallpaper.jpg &
 
 while true; do
