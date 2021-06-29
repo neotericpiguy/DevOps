@@ -3,7 +3,7 @@
 set -e
 
 bookmark=$(cat ~/.bin/bookmarks | dmenu -l 12)
-bookmark="`echo $bookmark | sed -r 's/^/http:\/\//g;s/http:\/\/http/http/g'`"
+bookmark="`echo $bookmark | sed -r 's/^/http:\/\//g;s/http:\/\/http/http/g' | awk '{print $1}'`"
 
 echo $bookmark
 if [ ! "$bookmark" == "" ]; then
