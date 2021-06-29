@@ -130,7 +130,6 @@ set sleep_time=0
 set pager_context=3
 set pager_stop=yes
 
-set index_format="%4C %Z %?X?A&-? %{%b %d} %-20.20L %?M?(#%03M)&(%4c)? %?y?(%.20Y) ?%s"
 set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
 #set status_format="/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
 
@@ -148,6 +147,14 @@ set new_mail_command = "/usr/bin/notify-send \"$from\" \"%o unread %n new\"|"
 #   -message '%n new messages, %u unread.' -activate 'com.apple.Terminal'"
 # --------------------------------------------------------------------------
 
+
+# http://www.mutt.org/doc/manual/#regexp
+set index_format="%4C %Z %?X?A&-? %-6@date@  %-20.20L %?M?(#%03M)&(%4c)? %?y?(%.20Y) ?%s"
+
+index-format-hook  date  "~d<1d"    "%[%H:%M]"
+index-format-hook  date  "~d<1m"    "%[%a %d]"
+index-format-hook  date  "~d<1y"    "%[%b %d]"
+index-format-hook  date  "~A"       "%[%m/%y]"  
 
 #Goo book https://gitlab.com/goobook/goobook
 macro index,pager a "<pipe-message>goobook add<return>" "add the sender address to Google contacts"
