@@ -12,7 +12,6 @@ dunst &
 google-chrome-beta --no-startup-window &
 
 while :; do xsetroot -name "`~/.bin/statusbar`" ; sleep 60 ; done &
-hsetroot -center ~/.icons/wallpaper.jpg &
 
 while true; do
     dwm >> ~/.dwm.log

@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -x
+
+setWallpaper() {
+  source=~/.icons/__Loading___Wallpaper_by_Twilease.jpg
+  target="`mktemp --tmpdir XXXXXXXX`.png"
+  weatherImg="`mktemp`.png"
+
+  # add padding to make the correct size
+  convert -size 2560x1080 xc:black $target
+  convert $target $source -gravity center -composite $target
+
+  curl -o $weatherImg 'wttr.in/Tucson.png?u&format=v2' 
+  convert $target $weatherImg -gravity southeast -composite $target
+
+  curl -o $weatherImg 'wttr.in/Tucson.png?u&format=v3' 
+  convert $weatherImg -resize 80% $weatherImg
+  convert $target $weatherImg -gravity southwest -composite $target
+
+  curl -o $weatherImg 'wttr.in/Tucson.png?u' 
+  convert $weatherImg -resize 90% $weatherImg
+  convert $target $weatherImg -geometry +0+30 -gravity northwest -composite $target
+
+
+  hsetroot -center $target
+
+  rm $target $weatherImg
+}
+
+main () {
+  #  curl -s "wttr.in/?format=%l:+%t%w"
+  weather=`curl -s "wttr.in/Tucson?u&format=%l:+%t%w"`
+  dateStr=`date +"%a %b %d, %Y %H:%M %Z"`
+
+  phoneStr=`/home/jannua/.bin/and temp | awk '{print "Phone " $3 "°F "$7}'`
+
+  echo "$phoneStr $weather $dateStr"
+
+  setWallpaper > /dev/null 2>/dev/null
+#  setWallpaper
+}
+
+main $@
