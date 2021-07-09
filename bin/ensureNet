@@ -32,7 +32,8 @@ restart() {
     waitForInternet
     findPhoneGateway
     adbConnect
-    until ! ping -c 1 $gatewayIp 2> /dev/null; do sleep 1 ; done | ttyplot
+
+    until ! ping -c 1 $gatewayIp 2> /dev/null; do sleep 1 ; done | sed -ur 's/.*=//g;s/\ ms.*//g' | ttyplot -t "pings"
   done
 }
 
