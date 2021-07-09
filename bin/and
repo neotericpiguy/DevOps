@@ -334,7 +334,7 @@ requip() {
 adbWirelessSetup() {
   adb devices | grep -v 'List of devices' | cut -f1 | xargs adb disconnect
 
-  ip r | grep -i 'default via'| awk '{print $3}' | xargs adb connect
+ adb connect 192.168.42.129
 }
 
 adbWireless() {
