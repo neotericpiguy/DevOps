@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e 
+
+dnsTestUrl="www.google.com"
+
+trap cleanup 0 SIGTERM SIGKILL
+
+cleanup() {
+  echo "Cleaning"
+  [ ! -z $plotPID ] && kill $plotPID 2> /dev/null
+}
+
+findPhoneGateway() {
+  gatewayIp="`traceroute -n $dnsTestUrl | grep -i 192.168 | tail -n1 | awk '{print $2}'`"
+  echo "Found Phone Gateway $gatewayIp"
+}
+
+waitForInternet() {
+  echo "Waiting for pings to return"
+  until curl --connect-timeout 1 $dnsTestUrl > /dev/null 2>/dev/null; do sleep 1 ;echo -n "." ;done
+  until speedtest-cli ; do sleep 1 ; done
+}
+
+adbConnect() {
+  (adb devices | grep -v 'List of devices' | cut -f1 | xargs adb disconnect) > /dev/null
+  adb connect $gatewayIp
+}
+
+restart() {
+  while :; do 
+    waitForInternet
+    findPhoneGateway
+    adbConnect
+    until ! ping -c 1 $gatewayIp 2> /dev/null; do sleep 1 ; done | ttyplot
+  done
+}
+
+function graphTitle() {
+  ping $gatewayIp 2> /dev/null| sed -ur 's/.*=//g;s/\ ms.*//g' | ttyplot -t "$1"
+}
+
+function graph() {
+  ping $gatewayIp 2> /dev/null | sed -ur 's/.*=//g;s/\ ms.*//g' | ttyplot -t "$gatewayIp"
+}
+
+main() {
+#  $1 ${@:2}
+  restart
+}
+
+main $@
