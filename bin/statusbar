@@ -9,7 +9,7 @@ setWallpaper() {
 
   # add padding to make the correct size
   convert -size 2560x1080 xc:black $target
-  convert $target $source -gravity center -composite $target
+#  convert $target $source -gravity center -composite $target
 
   curl -o $weatherImg 'wttr.in/Tucson.png?u&format=v2' 
   convert $target $weatherImg -gravity southeast -composite $target
@@ -17,6 +17,10 @@ setWallpaper() {
   curl -o $weatherImg 'wttr.in/Tucson.png?u&format=v3' 
   convert $weatherImg -resize 80% $weatherImg
   convert $target $weatherImg -gravity southwest -composite $target
+
+  curl -o $weatherImg 'wttr.in/88005.png?u&format=v3' 
+  convert $weatherImg -resize 80% $weatherImg
+  convert $target $weatherImg -geometry +500+0 -gravity southwest -composite $target
 
   curl -o $weatherImg 'wttr.in/Tucson.png?u' 
   convert $weatherImg -resize 90% $weatherImg
