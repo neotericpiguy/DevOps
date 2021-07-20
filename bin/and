@@ -477,6 +477,16 @@ tempRaw() {
   echo "scale=2; `adb shell dumpsys battery | grep -i temperature | awk '{print $2}'` / 10 * 9/5 +32" | bc -l
 }
 
+tempRaw() {
+  local temp=$(echo "scale=2; `adb shell dumpsys battery | grep -i temperature | awk '{print $2}'` / 10 * 9/5 +32" | bc -l)
+  echo $temp
+}
+
+batRaw() {
+  local bat=`adb shell dumpsys battery | grep -i level | awk '{print $2}'`
+  echo $bat
+}
+
 temp() {
   local temp=$(echo "scale=2; `adb shell dumpsys battery | grep -i temperature | awk '{print $2}'` / 10 * 9/5 +32" | bc -l)
   local bat=`adb shell dumpsys battery | grep -i level | awk '{print $2}'`
