@@ -342,7 +342,8 @@ adbWireless() {
 #  adbWirelessSetup
   # chrome no wrky when screen off -S
 #  scrcpy --stay-awake --turn-screen-off --bit-rate $bitrate --max-size 800 --shortcut-mod lctrl
-  scrcpy --stay-awake --turn-screen-off --bit-rate $bitrate --shortcut-mod lctrl
+#  scrcpy --stay-awake --turn-screen-off --bit-rate $bitrate --shortcut-mod lctrl
+  scrcpy --stay-awake --bit-rate $bitrate --shortcut-mod lctrl
 #  scrcpy --bit-rate $bitrate
 }
 
