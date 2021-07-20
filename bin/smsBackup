@@ -1,0 +1,170 @@
+#!/bin/bash
+
+# https://synctech.com.au/sms-backup-restore/fields-in-xml-backup-files/
+smsFile="sms.xml"
+
+function sync() { #
+  sed -ri 's/$/\r/g' $smsFile
+  rclone -vv copy gdrive:"SMSBackupRestore/${smsFile}" ./
+  sed -ri 's/\r//g' $smsFile
+  git add ${smsFile} calls.xml smsBackup
+  sed -ri 's/gpgsign = .*/gpgsign = false/g' ~/.gitconfig
+  git commit -am "`date +\"%Y%m%d\"` update"
+  sed -ri 's/gpgsign = .*/gpgsign = true/g' ~/.gitconfig
+}
+
+function stats() { #
+  ## Generate stats
+  sed -r 's/.*contact_name=//g;s/\r/\n/g' ${smsFile} | egrep -v '(part|address=|addrs|<!--|-->|\?>|smses)' | grep '/>' | \
+    sed -r 's/\ \/>//g;s/"//g' | sort | uniq | while read contact; do
+    count=`egrep "contact_name=\"$contact\"" ${smsFile}  | wc -l`
+    echo $contact,$count
+  done | sort --field-separator=',' -n --key=2
+}
+
+smsXmlToString() { #
+  ## Generate stats
+  sed -r 's/.*type="([^\"]+)".*body=(.*) toa=.*readable_date="([^\"]+)".*contact_name="([^\"]+)".*/\3 > \1 > \2 --\4/g;s#> 1 >#>>#g;s#> 2 >#<<#g' -
+}
+
+function conversation() { # 'name of person'
+  ## Generate stats
+  local contact="$@"
+  # type - 1 = Received, 2 = Sent, 3 = Draft, 4 = Outbox, 5 = Failed, 6 = Queued
+
+  echo "Conversation with \"$contact\""
+  tac $smsFile | egrep "contact_name=\"$contact\"" | grep -v '<mms' | smsXmlToString
+}
+
+function msgsOnDate() { # 'Jul 11, 2021' 'Marie'
+  ## Generate stats
+  local dateStr="${1?"Date str Jul 11, 2021"}"
+  local contact="${2?"contact"}"
+
+  egrep "${dateStr}.*${contact}" ${smsFile} | grep -v mms | wc -l
+}
+
+function msgsRate() { # 'contact name'
+  ## Generate stats
+  local contact="${1?"contact"}"
+  tac ${smsFile} | egrep "${dateStr}.*${contact}" | egrep -v '<(mms|part)' | \
+    sed -r 's/.*readable_date="([^\"]+)".*/\1/g;s/\ \S+ \S\S$//g' | uniq | while read dateStr; do
+    echo "$dateStr;`msgsOnDate \"$dateStr\" \"$contact\"`"
+  done
+}
+
+function png() { # 'contact' [20]
+  ## Generate stats
+  local contact=${1?"Contact"}
+  local history=${2-20}
+  msgsRate $contact | head -n $history | \
+  gnuplot -p -e "
+    set terminal png size 2000,800;
+    set size ratio 0.35;
+    set timefmt \"%b %d, %Y\";
+    set xdata time;
+    set datafile separator \";\"; 
+    set format x \"%m/%d/%Y\";
+    set xtics rotate; 
+    set output \"$contact.png\";
+    set title \"$contact\";
+    plot \"-\" using 1:2 title \"msg count\" with linespoints
+    "
+}
+
+timestamp2TwentyFourHour() {
+    local timestamp=${1?"Timestamp: \"Jul 17, 2021 9:54:46 PM\""}
+    hour=`echo $timestamp | sed -r 's/^\S+\ \S+\ \S+\ ([^:]+):.*/\1/g'`
+    meridian=`echo $timestamp | sed -r 's/^\S+\ \S+\ \S+\ \S+ (\S+)/\1/g'`
+    if [[ $meridian == "AM" ]]; then
+      if [[ $hour == "12" ]] ; then
+        hour=0
+      fi
+    else
+      if [[ $hour != "12" ]] ; then
+        hour=$(($hour+12))
+      fi
+    fi
+    echo $timestamp| sed -r "s/\S+:(\S+):(\S+)\ (AM|PM)/$hour:\1:\2 /g"
+}
+function daily() { # 'Jul 11, 2021'
+  ## Generate stats
+  local dateStr="${1?"Date str Jul 11, 2021"}"
+  local columns=0
+
+  declare -A nameColumnMap
+  declare -A nameValueMap
+
+  dataFile=`mktemp`
+
+  totalColumns=`grep -i "$dateStr" $smsFile | smsXmlToString | sed -r 's/.*--(.*)$/\1/g' | sort | uniq |wc -l`
+  echo "Total Contacts: $totalColumns"
+  while read line; do
+    name=`echo $line | sed -r 's/.*--(.*)$/\1/g' `
+
+    timestamp=`echo $line | sed -r 's/^(.*).*(<<|>>).*/\1/g'`
+    timestamp="`timestamp2TwentyFourHour \"$timestamp\"`"
+
+    echo $timestamp 1>&2
+
+    echo -n "$timestamp; "
+    if [ ${nameColumnMap[${name}]+abc} ]; then
+      nameValueMap[$name]=$((${nameValueMap[$name]}+1))
+    else
+      columns=$((columns+1))
+      nameColumnMap[$name]=$columns
+      nameValueMap[$name]=1
+    fi
+    for x in `seq 2 ${nameColumnMap[${name}]}`; do 
+      echo -n "; "
+    done
+    echo -n "${nameValueMap[${name}]}"
+
+    for x in `seq ${nameColumnMap[${name}]} ${totalColumns}`; do 
+      echo -n "; "
+    done
+    echo
+  done <<< $(grep -i "$dateStr" $smsFile | egrep -v '<mms' | smsXmlToString) > $dataFile
+
+  plotparams=""
+  for i in "${!nameColumnMap[@]}"; do
+#    echo "key  : $i"
+#    echo "value: ${nameColumnMap[$i]}"
+    plotparams="${plotparams} \"${dataFile}\" using 1:$((${nameColumnMap[$i]}+1)) title \"$i\" with linespoints,"
+  done
+
+  echo "plot params: $plotparams"
+ gnuplot -p -e "
+   set terminal png size 2000,800;
+   set size ratio 0.35;
+   set timefmt \"%b %d, %Y %H:%M:%S \";
+   set xdata time;
+   set datafile separator \";\"; 
+   set format x \"%H:%M:%S\";
+   set xtics rotate; 
+   set output \"$dateStr.png\";
+   set title \"$dateStr\";
+   plot $plotparams;
+   "
+#http://gnuplot.sourceforge.net/docs_4.2/node274.html
+  rm -rf $dataFile
+}
+
+usage() {
+  functions="`egrep -i '^function' $0 |sed -r 's/function (\S+)\(\).*/\1/g'`"
+  exeName="`basename $0`"
+
+  echo "Usage: $exeName FUNCTION [params]"
+  while read functionName; do
+  echo -n "  or   $exeName "
+    echo "$functionName"
+  done <<< $(egrep -i '^function' $0 | sed -r 's/function (\S+)\(\)\ \{ #/\1/g')
+}
+
+main() {
+  [ $# -eq 0 ] && usage
+
+  $1 "${@:2}"
+}
+
+main "$@"
